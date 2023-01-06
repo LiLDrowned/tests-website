@@ -1,0 +1,63 @@
+{% extends 'index.html' %}
+
+{% block head %}
+<title>Students Tests</title>
+{% endblock %}
+
+{% block body %}
+
+<form action="/auth/sign-up" method="POST">
+
+    <div class="p-3 col-md-2 offset-md-5 offset-xs-4">
+        <h4>Sign in</h4>
+    </div>
+
+    <div class="col-md-3 offset-md-2">
+        <h5>Account name</h5>
+    </div>
+
+    <div class="col-xs-7 col-md-7 offset-md-2 ">
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" name="name" placeholder="Username">
+        </div>
+    </div>
+
+    <div class="col-md-2 offset-md-2">
+        <h5>Email</h5>
+    </div>
+
+    <div class="col-md-7 offset-md-2 ">
+        <div class="input-group mb-3">
+            <input type="email" class="form-control" name="email" placeholder="Email">
+        </div>
+    </div>
+
+    <div class="col-md-2 offset-md-2">
+        <h5>Password</h5>
+    </div>
+
+    <div class="col-md-7 offset-md-2 ">
+        <div class="input-group mb-3">
+            <input type="password" class="form-control" name="password" placeholder="Password" >
+        </div>
+    </div>
+
+
+    <div class="col-md-3 offset-md-2">
+        <h5>Confirm password</h5>
+    </div>
+
+    <div class="col-md-7 offset-md-2 ">
+        <div class="input-group">
+            <input type="password" class="form-control" name="confirm" placeholder="Confirm password">
+        </div>
+    </div>
+
+
+    <div class="p-3 col-xs-12 col-md-3 offset-md-4">
+        <input class="btn btn-primary btn-block" type="submit" value="Sign in">
+    </div>
+
+</form>
+
+{% endblock %}

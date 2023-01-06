@@ -1,0 +1,31 @@
+{% extends 'index.html' %}
+
+{% block head %}
+<title>Students Tests</title> 
+{% endblock %}
+
+{% block body %}
+
+<form method="POST">
+
+    <div class="p-3 col-md-12 text-center">
+        <h4>Create test</h4>
+    </div>
+    
+    <div class=" col-md-7 offset-md-2">
+        <h5>Test name</h5>
+    </div>
+
+    <div class="col-xs-7 col-md-7 offset-md-2">
+        <div class="input-group mb-3 ">
+            <input type="text" class="form-control" name="test_name" placeholder="Test name">
+        </div>
+    </div>
+
+    <div class="p-3 col-xs-12 col-md-3 text-center offset-md-2">
+        <input class="btn btn-primary btn-block" type="submit" value="Create test">
+    </div>
+ 
+</form>
+
+{% endblock %}

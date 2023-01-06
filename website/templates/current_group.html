@@ -1,0 +1,138 @@
+{% extends 'index.html' %}
+
+{% block head %}
+<title>Students Tests</title> 
+{% endblock %}
+
+{% block body %}
+
+<form action = "/groups/current-group" method="POST">
+    <div class="p-3 col-md-12 col-xs-12 text-center">
+        <h3>{{ group_name }}</h4>
+    </div>
+    
+    <div class="row">
+      <div class="col-md-3 text-center">
+
+            <table class="table table-bordered">
+
+                <thead>
+
+                  <tr>
+                    
+                    <th scope="col" class="text-center">Members</th>
+                    
+                  </tr>
+
+                </thead>
+
+                <tbody>
+                  
+                  {% for member in members %}
+
+                    <tr>
+
+                      <td class="col-md-8 text-center">{{ member['name'] }}
+                        {% if admin == True %}
+                            <a class="btn btn-danger" href="#">Kick</a>
+                        {% endif %}
+                      </td>
+
+                    </tr>
+
+                  {% endfor %}
+
+                </tbody>
+
+                <thead>
+
+                  <tr>
+                    
+                    <th scope="col" class="text-center">Invited memeber</th>
+                    
+                  </tr>
+
+                </thead>
+
+                <tbody>
+                  
+                  {% for invite in invites %}
+
+                    <tr>
+
+                      <td class="col-md-8 text-center">{{ invite['name'] }}
+                        {% if admin == True %}
+                            <a class="btn btn-danger" href="#">Cancel</a>
+                        {% endif %}
+                      </td>
+
+                    </tr>
+
+                  {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+        
+        <div class="col-md-9 text-center">
+
+            {% if tests != [] %}
+
+            <table class="table table-bordered">
+
+                <thead>
+
+                  <tr>
+
+                    <th scope="col" class="text-center">Test name</th>
+                    <th scope="col" class="text-center">Actions</th>
+                    
+                  </tr>
+
+                </thead>
+
+                <tbody>
+
+                  {% for test in tests %}
+                  <tr>
+
+                    <td class="col-md-8 text-center">{{ test[1] }}</td>
+                    <td class="text-center">
+                        <a class="btn btn-success" href="/tests/start-test/{{ test['test_id'] }}/1">Start</a>
+                        <a class="btn btn-primary" href="#">Edit</a>
+
+                        {% if admin == True %}
+
+                          <a class="btn btn-danger" href="/tests/delete-test/{{ test[0] }}">Delete</a>
+
+                        {% endif%}
+
+                    </td>
+
+
+                  </tr>
+                  
+                  {% endfor %}
+
+                </tbody>
+
+            </table>
+
+            {% else %}
+
+                <h4>No tests</h4>
+                <div>
+                  <a class="btn btn-primary" href="/tests/create-test">Create test</a>
+                </div>
+                
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</form>
+
+{% endblock %}

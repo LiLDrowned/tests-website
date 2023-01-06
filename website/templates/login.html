@@ -1,0 +1,41 @@
+{% extends 'index.html' %}
+
+{% block head %}
+<title>Students Tests</title> 
+{% endblock %}
+
+{% block body %}
+
+<form action = "/auth/login" method="POST">
+
+    <div class="p-3 col-md-2 offset-md-5 offset-xs-4">
+        <h4>Login</h4>
+    </div>
+    
+    <div class=" col-md-7 offset-md-2">
+        <h5>Account email address</h5>
+    </div>
+    
+    <div class="col-xs-7 col-md-7 offset-md-2">
+        <div class="input-group mb-3 ">
+            <input type="text" class="form-control" test-id="email-input" name="email" placeholder="Email">
+        </div>
+    </div>
+
+    <div class=" col-md-7 offset-md-2">
+        <h5>Password</h5>
+    </div>
+
+    <div class="col-xs-7 col-md-7 offset-md-2">
+        <div class="input-group mb-3">
+            <input type="password" class="form-control" test-id="password-input" name="password" placeholder="password">
+        </div>
+    </div>
+
+    <div class="p-3 col-xs-12 col-md-3 offset-md-4">
+        <input class="btn btn-primary btn-block" test-id="login-btn" type="submit" value="Login">
+    </div>
+
+</form>
+
+{% endblock %}

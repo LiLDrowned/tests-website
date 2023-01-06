@@ -1,0 +1,70 @@
+{% extends 'index.html' %}
+
+{% block head %}
+<title>Students Tests</title>
+{% endblock %}
+
+{% block body %}
+
+
+
+    <div class="p-3 col-md-12 text-center">
+        <h3>Invite people</h3>
+    </div>
+
+    <form method="POST">
+
+        <div class="row">
+            <div class="p-3 col-md-8 text-center">
+                <input type="text" class="form-control" test-id="search-input"
+                    name="search" placeholder="Find people">
+            </div>
+            <div class="p-3 col-md-4 text-center">
+                <input type="submit" class="btn btn-primary btn-block" test-id="find-input"
+                     value="Search">
+            </div>
+
+        </div>
+        
+        <div class="row">
+            
+            <div class="col-md-12 text-center">
+                {% if people != [] %}
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+
+                        <th scope="col" class="text-center">User's name</th>
+                        <th scope="col" class="text-center">Invite</th>
+                        
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for person in people %}
+                    <tr>
+
+                        <td class="col-md-8 text-center">{{ person[1] }}</td>
+                        <td class="text-center"><a class="btn btn-primary"
+                             test-id="go-to" href="/groups/add-person/{{person[0]}}">Invite</a></td>
+
+
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                
+                    
+                
+                </table>
+                {% else %}
+
+                    <h5>No results</h5>
+
+                {% endif %}
+
+            </div>
+            
+        </div>
+
+    </form>
+{% endblock %}

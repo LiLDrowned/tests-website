@@ -1,0 +1,178 @@
+{% extends 'index.html' %}
+
+{% block head %}
+<title>Students Tests</title>
+{% endblock %}
+
+{% block body %}
+
+  <form method="POST">
+
+    <div class="row">
+      <div class="p-3 col-md-4 col-xs-4 text-center offset-md-4">
+        <h3>Question number {{ current_question }}</h3>
+      </div>
+      <div class="p-3 col-md-2 col-xs-2 text-center">
+        {{ points }}/{{ max_question }} {{ percentage }}%
+      </div>
+    </div>
+
+    <div class="p-3 col-xs-8 col-md-8 offset-md-2 border">
+        {{ questions[current_question - 1]['question'] }}
+    </div>
+
+    <br>
+
+    <div class="p-3 col-xs-8 col-md-8 offset-md-2 border">
+      <div class="form-check form-check-inline">
+
+        {% if all_answers[current_question] == 'a1' and 
+        right_answers[current_question - 1]['right_question'] == 'a1'%}
+
+        ✓
+
+        {% elif all_answers[current_question] == 'a1' and 
+        right_answers[current_question - 1]['right_question'] != 'a1'%}
+
+        X
+
+        {% elif all_answers[current_question] != 'a1' and 
+        right_answers[current_question - 1]['right_question'] == 'a1'%}
+
+        ✓
+
+        {% endif %}
+
+         <label class="form-check-label">{{ questions[current_question - 1]['asnwer1'] }}</label>
+      </div>
+    </div>
+
+    <br>
+
+    <div class="p-3 col-xs-8 col-md-8 offset-md-2 border">
+      <div class="form-check form-check-inline">
+
+        {% if all_answers[current_question] == 'a2' and 
+        right_answers[current_question - 1]['right_question'] == 'a2'%}
+
+        ✓
+
+        {% elif all_answers[current_question] == 'a2' and 
+        right_answers[current_question - 1]['right_question'] != 'a2'%}
+
+        X
+
+        {% elif all_answers[current_question] != 'a2' and 
+        right_answers[current_question - 1]['right_question'] == 'a2'%}
+
+        ✓
+
+        {% endif %}
+
+         <label class="form-check-label">{{ questions[current_question - 1]['asnwer2'] }}</label>
+      </div>
+    </div>
+
+    <br>
+
+    <div class="p-3 col-xs-8 col-md-8 offset-md-2 border">
+      <div class="form-check form-check-inline">
+
+        {% if all_answers[current_question] == 'a3' and 
+        right_answers[current_question - 1]['right_question'] == 'a3'%}
+
+        ✓
+
+        {% elif all_answers[current_question] == 'a3' and 
+        right_answers[current_question - 1]['right_question'] != 'a3'%}
+
+        X
+
+        {% elif all_answers[current_question] != 'a3' and 
+        right_answers[current_question - 1]['right_question'] == 'a3'%}
+
+        ✓
+
+        {% endif %}
+
+         <label class="form-check-label">{{ questions[current_question - 1]['asnwer3'] }}</label>
+      </div>
+    </div>
+
+    <br>
+
+    <div class="p-3 col-xs-8 col-md-8 offset-md-2 border">
+      <div class="form-check form-check-inline">
+
+        {% if all_answers[current_question] == 'a4' and 
+        right_answers[current_question - 1]['right_question'] == 'a4'%}
+
+        ✓
+
+        {% elif all_answers[current_question] == 'a4' and 
+        right_answers[current_question - 1]['right_question'] != 'a4'%}
+
+        X
+
+        {% elif all_answers[current_question] != 'a4' and 
+        right_answers[current_question - 1]['right_question'] == 'a4'%}
+
+        ✓
+
+        {% endif %}
+
+         <label class="form-check-label">{{ questions[current_question - 1]['asnwer4'] }}</label>
+      </div>
+    </div>
+
+    <br>
+
+    <nav aria-label="Page navigation example ">
+      <ul class="pagination justify-content-center">
+        
+        {% if current_question != 1 %}
+
+          <li class="page-item"><a class="page-link" 
+            href="/tests/test_results/{{current_question - 1}}"><<</a></li>
+
+        {% else %}
+
+          <li class="page-item disabled"><a class="page-link" 
+            href="/tests/test_results/{{current_question - 1}}"><<</a></li>
+
+        {% endif %}
+
+        {% for number in range(1,max_question +1 ) %}
+
+          {% if number == current_question %}
+              
+          <li class="page-item active"><a class="page-link" 
+            href="/tests/test_results/{{ number }}">{{ number }}</a></li>
+
+          {% else %}
+
+            <li class="page-item pagination"><a class="page-link" 
+              href="/tests/test_results/{{ number }}">{{ number }}</a></li>
+
+          {% endif %}
+
+        {% endfor %}
+
+        {% if current_question != max_question %}
+
+          <li class="page-item"><a class="page-link" 
+            href="/tests/test_results/{{current_question + 1}}">>></a></li>
+
+        {% else %}
+
+          <li class="page-item disabled"><a class="page-link" 
+            href="/tests/test_results/{{current_question + 1}}">>></a></li>
+
+        {% endif %}
+
+      </ul>
+    </nav>
+    
+  </form>
+
+{% endblock %}

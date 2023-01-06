@@ -1,0 +1,192 @@
+{% extends 'index.html' %}
+
+{% block head %}
+<title>Students Tests</title>
+{% endblock %}
+
+{% block body %}
+
+  <form method="POST">
+
+    <div class="p-3 col-md-12 col-xs-12 text-center">
+      <h3>Question number {{ current_question }}</h4>
+    </div>
+
+    <div class="p-3 col-xs-8 col-md-8 offset-md-2 border">
+        {{ questions[current_question - 1]['question'] }}
+    </div>
+
+    <br> 
+
+    {% if answers[current_question] != 'a1' %}
+
+      <div class="p-3 col-xs-8 col-md-8 offset-md-2 border">
+
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="answers_options" id="a1" value="a1">
+          <label class="form-check-label" for="a1">{{ questions[current_question - 1]['asnwer1'] }}
+          </label>
+        </div>
+      
+      </div>
+
+    {% else %}
+
+    <div class="p-3 col-xs-8 col-md-8 offset-md-2 border">
+
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="answers_options" id="a1" 
+        value="a1" checked>
+        <label class="form-check-label" for="a1">{{ questions[current_question - 1]['asnwer1'] }}
+        </label>
+      </div>
+    
+    </div>
+
+    {% endif %}
+
+    <br>
+
+    {% if answers[current_question] != 'a2' %}
+
+    <div class="p-3 col-xs-8 col-md-8 offset-md-2 border">
+
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="answers_options" id="a2" value="a2">
+        <label class="form-check-label" for="a2">{{ questions[current_question - 1]['asnwer2'] }}
+        </label>
+      </div>
+    
+    </div>
+
+  {% else %}
+
+    <div class="p-3 col-xs-8 col-md-8 offset-md-2 border">
+
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="answers_options" id="a2" 
+        value="a2" checked>
+        <label class="form-check-label" for="a2">{{ questions[current_question - 1]['asnwer2'] }}
+        </label>
+      </div>
+    
+    </div>
+
+  {% endif %}
+    
+  <br>
+
+  {% if answers[current_question] != 'a3' %}
+
+    <div class="p-3 col-xs-8 col-md-8 offset-md-2 border">
+
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="answers_options" id="a3" value="a3">
+        <label class="form-check-label" for="a3">{{ questions[current_question - 1]['asnwer3'] }}
+        </label>
+      </div>
+    
+    </div>
+
+  {% else %}
+
+  <div class="p-3 col-xs-8 col-md-8 offset-md-2 border">
+
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="answers_options" id="a3" 
+      value="a3" checked>
+      <label class="form-check-label" for="a3">{{ questions[current_question - 1]['asnwer3'] }}
+      </label>
+    </div>
+  
+  </div>
+
+  {% endif %}
+
+  <br>
+
+  {% if answers[current_question] != 'a4' %}
+
+    <div class="p-3 col-xs-8 col-md-8 offset-md-2 border">
+
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="answers_options" id="a4" value="a4">
+        <label class="form-check-label" for="a4">{{ questions[current_question - 1]['asnwer4'] }}
+        </label>
+      </div>
+    
+    </div>
+
+  {% else %}
+
+  <div class="p-3 col-xs-8 col-md-8 offset-md-2 border">
+
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="answers_options" id="a4" 
+      value="a4" checked>
+      <label class="form-check-label" for="a4">{{ questions[current_question - 1]['asnwer4'] }}
+      </label>
+    </div>
+  
+  </div>
+
+  {% endif %}
+
+    
+    <div class="row">
+
+      <div class="p-3 col-xs-4 col-md-2 offset-md-5">
+        <input class="btn btn-success btn-block" name="action-btn" type="submit" value="Complete test">
+      </div>
+
+    </div>
+
+    <nav aria-label="Page navigation example ">
+      <ul class="pagination justify-content-center">
+        
+        {% if current_question != 1 %}
+
+          <li class="page-item"><input type="submit" class="page-link" value="<<"
+            name="action-btn"></li>
+
+        {% else %}
+
+          <li class="page-item disabled"><input type="submit" class="page-link" value="<<"
+            name="action-btn"></li>
+
+        {% endif %}
+
+        {% for number in range(1,max_question +1 ) %}
+
+          {% if number == current_question %}
+              
+          <li class="page-item active"><input type="submit" class="page-link" value="{{ number }}"
+              name="action-btn"></li>
+
+          {% else %}
+
+          <li class="page-item"><input type="submit" class="page-link" value="{{ number }}"
+            name="action-btn"></li>
+
+          {% endif %}
+
+        {% endfor %}
+
+        {% if current_question != max_question %}
+
+          <li class="page-item"><input type="submit" class="page-link" value=">>"
+            name="action-btn"></li>
+
+        {% else %}
+
+          <li class="page-item disabled"><input type="submit" class="page-link" value=">>"
+            name="action-btn"></li>
+
+        {% endif %}
+
+      </ul>
+    </nav>
+    
+  </form>
+
+{% endblock %}

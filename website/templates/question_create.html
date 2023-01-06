@@ -1,0 +1,247 @@
+{% extends 'index.html' %}
+
+{% block head %}
+<title>Students Tests</title>
+{% endblock %}
+
+{% block body %}
+
+  <form method="POST">
+
+    <div class="p-3 col-md-12 col-xs-12 text-center">
+      <h3>Question number {{ current_question }}</h4>
+    </div>
+
+    <div class="col-xs-8 col-md-8 offset-md-2">
+      <div class="input-group mb-3 mx-auto">
+          {% if 'question' in questions[current_question] %}
+
+            <input type="text" class="form-control" test-id="question-input" name="question" 
+            placeholder="{{ questions[current_question]['question'] }}">
+
+          {% else %}
+
+            <input type="text" class="form-control" 
+            test-id="question-input" name="question" placeholder="Question">
+
+          {% endif %}
+      </div>
+    </div>
+
+    <div class=" col-md-7 offset-md-2">
+      <h5>Correct answer a)</h5>
+    </div>
+
+    <div class="col-xs-8 col-md-8 offset-md-2">
+      <div class="input-group mb-3 mx-auto">
+          {% if 'right_answer' not in questions[current_question] %}
+
+            <input class="form-check-input" type="radio" name="right_answer" id="a1" 
+            value="a1" checked>
+          
+          {% elif questions[current_question]['right_answer'] == 'a1' %}
+
+            <input class="form-check-input" type="radio" name="right_answer" id="a1" 
+            value="a1" checked>
+
+          {% else %}
+
+            <input class="form-check-input" type="radio" name="right_answer" id="a1" 
+            value="a1">
+
+          {% endif %}
+
+          {% if 'answer1' in questions[current_question] %}
+
+            <input type="text" for="a1" class="form-control" test-id="asnwer1-input" name="answer1" 
+            placeholder="{{ questions[current_question]['answer1'] }}">
+
+          {% else %}
+
+            <input type="text" class="form-control" for="a1"
+            test-id="asnwer1-input" name="answer1" placeholder="corrent answer a)">
+
+          {% endif %}
+      </div>
+    </div>
+
+    <div class="col-xs-8 col-md-8 offset-md-2">
+      <div class="input-group mb-3 mx-auto">
+
+          {% if 'right_answer' in questions[current_question] %}
+
+            {% if questions[current_question]['right_answer'] == 'a2'%}
+
+            <input class="form-check-input" type="radio" name="right_answer" id="a2" 
+            value="a2" checked>
+
+            {% else %}
+
+            <input class="form-check-input" type="radio" name="right_answer" id="a2" 
+            value="a2" >
+
+            {% endif %}
+
+          {% else %}
+
+            <input class="form-check-input" type="radio" name="right_answer" id="a2" 
+            value="a2">
+
+          {% endif %}
+
+          {% if 'answer2' in questions[current_question] %}
+
+            <input type="text" class="form-control" test-id="answer2-input" name="answer2" for="a2"
+             placeholder="{{ questions[current_question]['answer2'] }}">
+
+          {% else %}
+
+            <input type="text" class="form-control" for="a2"
+            test-id="answer2-input" name="answer2" placeholder="b)">
+
+          {% endif %}
+      </div>
+    </div>
+
+    <div class="col-xs-8 col-md-8 offset-md-2">
+      <div class="input-group mb-3 mx-auto">
+
+          {% if 'right_answer' in questions[current_question] %}
+
+            {% if questions[current_question]['right_answer'] == 'a3'%}
+
+            <input class="form-check-input" type="radio" name="right_answer" id="a3" 
+            value="a3" checked>
+
+            {% else %}
+
+            <input class="form-check-input" type="radio" name="right_answer" id="a3" 
+            value="a3" >
+
+            {% endif %}
+
+          {% else %}
+
+            <input class="form-check-input" type="radio" name="right_answer" id="a3" 
+            value="a3">
+
+          {% endif %}
+
+          {% if 'answer3' in questions[current_question] %}
+
+            <input type="text" class="form-control" test-id="answer3-input" name="answer3" for="a3"
+            placeholder="{{ questions[current_question]['answer3'] }}">
+
+          {% else %}
+
+            <input type="text" class="form-control" for="a3"
+            test-id="answer3-input" name="answer3" placeholder="c)">
+
+          {% endif %}
+      </div>
+    </div>
+
+    <div class="col-xs-8 col-md-8 offset-md-2">
+      <div class="input-group mb-3 mx-auto">
+
+          {% if 'right_answer' in questions[current_question] %}
+
+            {% if questions[current_question]['right_answer'] == 'a4'%}
+
+            <input class="form-check-input" type="radio" name="right_answer" id="a4" 
+            value="a4" checked>
+
+            {% else %}
+
+            <input class="form-check-input" type="radio" name="right_answer" id="a4" 
+            value="a4" >
+
+            {% endif %}
+
+          {% else %}
+
+            <input class="form-check-input" type="radio" name="right_answer" id="a4" 
+            value="a4">
+
+          {% endif %}
+
+          {% if 'answer4' in questions[current_question] %}
+
+            <input type="text" class="form-control" test-id="answer4-input" name="answer4" for="a4"
+            placeholder="{{ questions[current_question]['answer4'] }}">
+
+          {% else %}
+
+            <input type="text" class="form-control" for="a4"
+            test-id="answer4-input" name="answer4" placeholder="d)">
+
+          {% endif %}
+
+      </div>
+    </div>
+
+    <div class="row">
+
+      <div class="p-3 col-xs-4 col-md-2 offset-md-2">
+        <input class="btn btn-danger btn-block" name="action-btn" type="submit" value="Delete question">
+      </div>
+   
+      <div class="p-3 col-xs-4 col-md-2 offset-md-1">
+        <input class="btn btn-primary btn-block" name="action-btn" type="submit" value="Add question">
+      </div>
+
+      <div class="p-3 col-xs-4 col-md-2 offset-md-1">
+        <input class="btn btn-success btn-block" name="action-btn" type="submit" value="Create test">
+      </div>
+
+    </div>
+
+    <nav aria-label="Page navigation example ">
+      <ul class="pagination justify-content-center">
+        
+        {% if current_question != 1 %}
+
+          <li class="page-item"><input type="submit" class="page-link" value="<<"
+            name="action-btn"></li>
+
+        {% else %}
+
+          <li class="page-item disabled"><input type="submit" class="page-link" value="<<"
+            name="action-btn"></li>
+
+        {% endif %}
+
+        {% for number in range(1,max_question +1 ) %}
+
+          {% if number == current_question %}
+              
+          <li class="page-item active"><input type="submit" class="page-link" value="{{ number }}"
+              name="action-btn"></li>
+
+          {% else %}
+
+          <li class="page-item"><input type="submit" class="page-link" value="{{ number }}"
+            name="action-btn"></li>
+
+          {% endif %}
+
+        {% endfor %}
+
+        {% if current_question != max_question %}
+
+          <li class="page-item"><input type="submit" class="page-link" value=">>"
+            name="action-btn"></li>
+
+        {% else %}
+
+          <li class="page-item disabled"><input type="submit" class="page-link" value=">>"
+            name="action-btn"></li>
+
+        {% endif %}
+
+      </ul>
+    </nav>
+    
+  </form>
+
+{% endblock %}

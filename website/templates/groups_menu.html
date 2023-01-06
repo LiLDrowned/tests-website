@@ -1,0 +1,94 @@
+{% extends 'index.html' %}
+
+{% block head %}
+<title>Students Tests</title>
+{% endblock %}
+
+{% block body %}
+
+
+
+    <div class="p-3 col-md-12 text-center">
+        <h4>Groups Menu</h4>
+    </div>
+    <form action = "/groups/leave-group/" method="DELETE">
+    <div class="row">
+        
+        <div class="col-md-6 text-center">
+
+          {% if groups != [] %}
+          
+            <h5>Your groups</h5>
+
+            <table class="table table-bordered">
+                <thead>
+                  <tr>
+
+                    <th scope="col" class="text-center">Group name</th>
+                    <th scope="col" class="text-center">Actions</th>
+                    
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {% for group in groups %}
+                  <tr>
+
+                    <td class="col-md-8 text-center">{{ group[1] }}</td>
+                    <td class="text-center"><a class="btn btn-primary" test-id="go-to" href="/groups/group/{{group[2]}}">Go to</a>
+                        <a class="btn btn-danger" href="/groups/leave-group/{{group[0]}}">Leave</a></td>
+
+
+                  </tr>
+                  {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+                <h4>No groups</h4>
+            {% endif %}
+
+        </div>
+      </form>
+
+        <div class="col-md-6 text-center">
+          <form method="DELETE"></form>
+
+          {% if invitations != [] %}
+
+           <h5>Groups Invites</h5>
+
+            <table class="table table-bordered">
+                <thead>
+                  <tr>
+
+                    <th scope="col" class="text-center">Group name</th>
+                    <th scope="col" class="text-center">Actions</th>
+
+                  </tr>
+
+                </thead>
+                
+                <tbody>
+                    {% for invite in invitations %}
+                    <tr>
+  
+                      <td class="col-md-8 text-center">{{ invite[1] }}</td>
+                      <td class="text-center"><a class="btn btn-primary" 
+                        href="/groups/join-group/{{invite[2]}}/{{invite[1]}}">Accept</a>
+                          <a class="btn btn-danger" href="#">Decline</a></td>
+  
+  
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+              <h4>No invites</h4>
+            {% endif %}
+          </form>
+        </div>
+      
+    </div>
+
+
+{% endblock %}
