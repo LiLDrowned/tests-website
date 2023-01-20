@@ -122,6 +122,8 @@ def sign_up():
 
                         # adding user in to the database
                         sql = "INSERT INTO users (name, email,password) values (%s,%s,%s) RETURNING user_id;"
+                        # tu nemusis pouzivat (f'name', f'email', f'password') nie? A pravdepodobne by si ani nemal...
+                        # staci (name, email, password, )
                         val = (f'{name}', f'{email}', f'{password1}', ) # toto by malo byt takto, aby si sa obranil proti SQL injection
                         # ohladom SQL injection pozri toto: https://www.w3schools.com/sql/sql_injection.asp
                         cur.execute(sql, val)
