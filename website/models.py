@@ -2,14 +2,18 @@ from .settings import DB_PASSWORD, DB_USERNAME
 import psycopg2
 from flask_login import UserMixin
 
+# podla mna by si nemal mat pripojenie na databazu a tieto queries v jednom subore ako class-u User, pretoze pripojenie a queries nepatria nie su models
+
 conn = psycopg2.connect(
+    # toto byt v settings ako POSTGRES_HOST , pretoze hostname databazy u tvojho kolegu moze byt iny ako hostname u teba...
+    # Nikomu sa to nebude chciet v kode menit, takze budu nadavat... Tiez to nie je best practice, vsetky taketo informacie by sa mali nacitavat z .env suborov
     host="localhost",
+    # databaza to iste, niekto bude mat pre nu iny nazov, tak sa mu nebuded chciet upravovat kod
     database="StudentsTests",
     user=DB_USERNAME,
     password=DB_PASSWORD)
 
 cur = conn.cursor()
-
 
 cur.execute('CREATE TABLE IF NOT EXISTS users (user_id serial PRIMARY KEY,'
             'name varchar (255) NOT NULL, email varchar (255) NOT NULL, password varchar (255));')
