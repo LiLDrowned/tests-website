@@ -12,9 +12,11 @@ def groups_menu():
     cur = conn.cursor(cursor_factory=DictCursor)
     user_id = current_user.id
 
+    # dalsi SQL injection, nedavaj tie premenne do stringu pre query...
     cur.execute(f"SELECT * FROM invitations WHERE user_id ='{user_id}'")
     invitations = cur.fetchall()
 
+    # dalsi SQL injection, nedavaj tie premenne do stringu pre query...
     cur.execute(f"SELECT * FROM groups WHERE user_id = '{user_id}'")
     groups = cur.fetchall()
 
@@ -26,6 +28,7 @@ def groups_menu():
 @login_required
 def group(group_id):
 
+    # tak toto je odporne, co to vlastne robi??? Naco to je???
     if 'group_id' in session:   
         session.pop('group_id')
         if 'admin' in session:
@@ -34,40 +37,46 @@ def group(group_id):
                 session.pop('test_id')
 
     cur = conn.cursor(cursor_factory=DictCursor)
+    # dalsi SQL injection, nedavaj tie premenne do stringu pre query...
     cur.execute("SELECT * FROM users WHERE user_id IN"
                 f"(SELECT user_id FROM groups WHERE group_id = '{group_id}');")
     members = cur.fetchall()
 
+    # dalsi SQL injection, nedavaj tie premenne do stringu pre query...
     cur.execute(f"SELECT * FROM users WHERE user_id IN (SELECT user_id FROM invitations WHERE group_id ='{group_id}');")
     invites = cur.fetchall()
 
     user_id = current_user.id
 
+    # dalsi SQL injection, nedavaj tie premenne do stringu pre query...
     cur.execute(f"SELECT * FROM groups WHERE group_id = '{group_id}' AND user_id = '{user_id}'")
     value = cur.fetchone()
     cur.close()
 
     if value != None:
 
+        # toto nedava zmysel... Najprv nastavis session['group_id'] = group_id a potom spravis groupd_id = session['group_id'] co si tym docielil?
         session['group_id'] = group_id
-        group_id = session['group_id']
+        group_id = session['group_id'] 
 
         cur = conn.cursor(cursor_factory=DictCursor)
+        # dalsi SQL injection, nedavaj tie premenne do stringu pre query...
         cur.execute(f"SELECT group_name,group_admin FROM groups WHERE group_id = '{group_id}' AND"
                     f" user_id = '{user_id}';")
         
         users_group = cur.fetchone()
 
+        # dalsi SQL injection, nedavaj tie premenne do stringu pre query...
         cur.execute(f"SELECT test_id,test_name FROM tests WHERE group_id = '{group_id}';")
         tests = cur.fetchall()
 
         cur.close()
 
         if users_group['group_admin'] != None:
-            
             session['admin'] = True
-            admin = session.get('admin')
-
+            admin = session.get('admin') # admin = True, nemusis robit session.get('admin')
+        
+        # else podmienku by som dal prec a pred if users_group['group_admin'] != None by som dal admin = False
         else:
             admin = False
 
@@ -94,6 +103,7 @@ def create_group():
         cur.execute("SELECT MAX(id) FROM groups")
         group_id = cur.fetchone()
 
+        # toto mozes spravit takto groupd_id = 1 if group_id[0] == None else int(group_id[0]) + 1
         if group_id[0] != None:
             group_id = int(group_id[0]) +1 
         
@@ -101,6 +111,7 @@ def create_group():
             group_id = 1
 
         sql = "INSERT INTO groups(group_name,user_id,group_admin,group_id) values (%s,%s,%s,%s)"
+        # spravit takto (group_name, user_id, 'True', group_id, )
         values = (f'{group_name}',f'{user_id}','True',group_id)
 
         cur.execute(sql,values)
@@ -122,10 +133,12 @@ def people():
 
             search = request.form.get('search')
 
-            if search != None :
+            if search != None:
 
                 group_id = session.get('group_id')
                 cur = conn.cursor(cursor_factory=DictCursor)
+                # toto je velmi zla query, tuto ti moze niekto spravit SQL injection
+                # sprav to tak, ako su spravene ostatne, nie ze hodnoty davas do stringu pre query
                 cur.execute(f"SELECT * FROM users WHERE LOWER(name) LIKE LOWER('{search}%')"
                         f" AND user_id NOT IN (SELECT user_id FROM groups WHERE group_id = '{group_id}')"
                         f" AND user_id NOT IN (SELECT user_id FROM invitations WHERE group_id = '{group_id}')")
@@ -133,14 +146,15 @@ def people():
                 finds = cur.fetchall()
                 cur.close()
 
+                # pridat status code, asi ma byt 200
                 return render_template('people.html',user = current_user,people = finds ,page = 'Group',
                                     group_id = group_id)
 
-            else:
+            else: # zbytocny else
                 flash('Enter characters!', category='error')
                 return redirect(url_for('groups.people'))
 
-        else:
+        else: # zbytocny else
 
             group_id = session.get('group_id')
 
@@ -157,19 +171,19 @@ def people():
             return render_template('people.html',user = current_user,people = people ,page = 'Group',
                                     group_id = group_id)
 
-    else:
+    else: # zbytocny else
         flash('You are not member of this group!', category='error')
         return redirect(url_for('groups.groups_menu'))
 
 @groups.route('/kick-person/<int:user_id>', methods = ["GET","DELETE"])
 @login_required
-def kick_person(user_id):
+def kick_person(user_id): # user_id ani nepouzivas, je vobec v tejto funkcii ako argument potrebny?
     if 'group_id' in session:
 
         group_id = session.get('group_id')
         return redirect(url_for('groups.group',group_id = group_id))
 
-    else:
+    else: # zbytocny else
         # flash()
         return redirect(url_for('groups.groups-menu')) 
 
@@ -185,6 +199,7 @@ def add_person(user_id):
     group_name = group['group_name']
 
     sql = "INSERT INTO invitations (group_name, group_id, user_id) values (%s,%s,%s);"
+    # pouzit (group_name, group_id, user_id, )
     val = (f'{group_name}', f'{group_id}', f'{user_id}')
     cur.execute(sql,val)
 
