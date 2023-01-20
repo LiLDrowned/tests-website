@@ -13,6 +13,8 @@ def create_test():
 
         group_id = session.get('group_id')
 
+        # prepisal by som to na:
+        # admin = session.get('admin') if 'admin' in session else False
         if 'admin' in session:
             admin = session.get('admin')
         else:
@@ -30,12 +32,13 @@ def create_test():
             
             return redirect(url_for('tests.create_questions',current_question = 1))
 
-        else:
+        else: # zbytocny else
 
+            # chyba status code, pridat... Minimalne by mal byt 200
             return render_template('create_test.html',user = current_user,page = 'Group'
                                    ,group_id = group_id,admin = admin)
     
-    else:
+    else: # zbytocny else
         return redirect(url_for('groups.groups_menu'))
 
 @tests.route('/create-questions/<int:current_question>',methods = ["POST","GET"])
@@ -45,6 +48,8 @@ def create_questions(current_question):
     if 'group_id' in session:
         group_id = session.get('group_id')
 
+        # prepisal by som to na:
+        # admin = session.get('admin') if 'admin' in session else False
         if 'admin' in session:
             admin = session.get('admin')
 
@@ -54,7 +59,7 @@ def create_questions(current_question):
         max_question = session.get('max_question')
 
         if request.method == 'POST':
-            
+            # toto nevie, ci je uplne stastne riesenie...
             if request.form['action-btn'] == 'Delete question':
                 return delete_question(current_question)
             
@@ -74,12 +79,13 @@ def create_questions(current_question):
                 number = request.form.get('action-btn')
                 return save_question(current_question,number)
 
-        else:
+        else: # zbytocny else
+            # chyba status code
             return render_template('question_create.html',user = current_user,page = 'Group',admin = admin,
                                 group_id = group_id,current_question = current_question
                                 ,max_question = max_question,questions = questions)
 
-    else:
+    else: # zbytocny else
         return redirect(url_for('groups.groups_menu'))
 
 
@@ -90,16 +96,19 @@ def edit_test():
     if 'group_id' in session:
         group_id = session.get('group_id')
 
+        # prepisal by som to na:
+        # admin = session.get('admin') if 'admin' in session else False
         if 'admin' in session:
             admin = session.get('admin')
 
         else:
             admin = False
 
+        # chyba status code
         return render_template('edit_test.html',user = current_user,page = 'Group',admin = admin,
                                 group_id = group_id)
 
-    else:
+    else: # zbytocny else
         return redirect(url_for('groups.groups_menu'))
 
 @tests.route('/start-test/<int:test_id>/<int:current_question>',methods = ["POST","GET"])
@@ -110,6 +119,8 @@ def start_test(test_id,current_question):
     if 'group_id' in session:
         group_id = session.get('group_id')
 
+        # prepisal by som to na:
+        # admin = session.get('admin') if 'admin' in session else False
         if 'admin' in session:
             admin = session.get('admin')
 
@@ -121,7 +132,7 @@ def start_test(test_id,current_question):
             answers = {}
 
         if request.method == 'POST':
-        
+            # zase neviem, ci je to uplne stastne riesenie
             if request.form['action-btn'] == 'Complete test':
                 return save_answer(current_question,'results')
             
@@ -135,23 +146,26 @@ def start_test(test_id,current_question):
                 number = request.form.get('action-btn')
                 return save_answer(current_question,number)
 
-        else:
+        else: # zbytocny else
 
             cur = conn.cursor(cursor_factory=DictCursor)
 
+            # SQL injection, nedavaj tie premenne do stringu query
             cur.execute(f"SELECT * FROM questions WHERE test_id = '{test_id}'")
             questions = cur.fetchall()
 
+            # SQL injection, nedavaj tie premnne do stringu query
             cur.execute(f"SELECT * FROM tests WHERE test_id = '{test_id}'")
             test = cur.fetchone()
 
             cur.close()
 
+            # chyba status code
             return render_template('start_test.html',user = current_user,page = 'Group',admin = admin,
                         group_id = group_id,current_question = current_question
                         ,questions = questions,max_question = test['number_questions'],answers = answers)
 
-    else:
+    else: # zbytocny else
         return redirect(url_for('groups.groups_menu'))
 
 @tests.route('/test_results/<int:current_question>',methods = ["GET"])
@@ -163,6 +177,8 @@ def test_results(current_question):
         group_id = session.get('group_id')
         test_id = session.get('test_id')
 
+        # prepisal by som to na:
+        # admin = session.get('admin') if 'admin' in session else False
         if 'admin' in session:
             admin = session.get('admin')
 
@@ -172,9 +188,11 @@ def test_results(current_question):
 
         cur = conn.cursor(cursor_factory=DictCursor)
 
+        # SQL injection, nedavaj tie premenne do stringu query!!!
         cur.execute(f"SELECT right_question,question_number FROM questions WHERE test_id = '{test_id}';")
         right_answers = cur.fetchall()
 
+        # SQL injection, nedavaj tie premenne do stringu query
         cur.execute(f"SELECT * FROM questions WHERE test_id = '{test_id}'")
         questions = cur.fetchall()
 
@@ -194,13 +212,14 @@ def test_results(current_question):
         
         percentage = round((points / number_questions) * 100,2)
 
+        # chyba status code
         return render_template('test_results.html',right_answers = right_answers,user_answers = answers,
             percentage = percentage,max_question = number_questions,points = points,questions = questions
             ,user = current_user,page = 'Group',admin = admin,group_id = group_id
             ,current_question=current_question,all_answers = all_answers)
 
     
-    else:
+    else: # zbytocny else
         return redirect(url_for('groups.groups_menu'))
 
 
@@ -212,8 +231,10 @@ def delete_test(test_id):
 
         cur = conn.cursor(cursor_factory=DictCursor)
 
+        # SQL injection, nedavaj tie premenne do stringu query
         cur.execute(f"DELETE FROM questions WHERE test_id='{test_id}';")
 
+        # SQL injection, nedavaj tie premenne do stringu query
         cur.execute(f"DELETE FROM tests WHERE test_id='{test_id}';")
 
         conn.commit()
@@ -222,7 +243,7 @@ def delete_test(test_id):
         group_id = session.get('group_id')
         return redirect(url_for('groups.group',group_id = group_id))
 
-    else:
+    else: # zbytocny else
         return redirect(url_for('groups.groups_menu'))
 
 
@@ -254,6 +275,8 @@ def save_question(current_question,next_question):
     answers_val = [question,answer1,answer2,answer3,answer4]
     answers_str = ['question','answer1','answer2','answer3','answer4','right_answer']
 
+    # v tychto cykloch pouzivas magicke cisla 4 a 6, mohol by si ich niekde predtym deklarovat ako premenne s normalnym nazvom,
+    # pretoze neviem, co ta 4 a 6 znamena
     for numbers in range(0,4):
         if f'a{numbers + 1}' == right_answer:
             answers_val.append(f'a{numbers + 1}')
@@ -311,6 +334,7 @@ def complete_test():
     cur = conn.cursor(cursor_factory=DictCursor)
 
     sql = "INSERT INTO tests(test_name,group_id,number_questions) values(%s,%s,%s) RETURNING test_id"
+    # prepisat na (test_name, group_id, max_question, )
     val = (f'{test_name}',f'{group_id}',f'{max_question}')
     cur.execute(sql,val)
 
@@ -319,10 +343,11 @@ def complete_test():
 
     str_val = ('question','answer1','answer2','answer3','answer4','right_answer')
 
+    # tento cyklus nie je uplne nalepsi, ale asi sa to inak nedalo spravit...
     for question in questions:
-        
-        sql = "INSERT INTO questions(question,asnwer1,asnwer2,asnwer3,asnwer4,right_question,test_id,user_id,question_number) values(%s,%s,%s,%s,%s,%s,%s,%s,%s)"
 
+        sql = "INSERT INTO questions(question,asnwer1,asnwer2,asnwer3,asnwer4,right_question,test_id,user_id,question_number) values(%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        # opat bez tych f'
         val = (f'{questions[question][str_val[0]]}',f'{questions[question][str_val[1]]}'
         ,f'{questions[question][str_val[2]]}',f'{questions[question][str_val[3]]}'
         ,f'{questions[question][str_val[4]]}',f'{questions[question][str_val[5]]}',f'{test_id}'
