@@ -31,7 +31,7 @@ cur.execute('CREATE TABLE IF NOT EXISTS questions (question_id serial PRIMARY KE
 
 cur.execute('CREATE TABLE IF NOT EXISTS invitations (invitation_id serial PRIMARY KEY,'
             'group_name varchar (255) NOT NULL,group_id integer,constraint fk_invitaions_groups foreign key (group_id)'
-            ' REFERENCES groups (id),user_id integer, constraint fk_invitaions_users foreign key (user_id)'
+            ' REFERENCES groups (group_id),user_id integer, constraint fk_invitaions_users foreign key (user_id)'
             ' REFERENCES users (user_id));')
 
 conn.commit()

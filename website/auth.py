@@ -8,7 +8,7 @@ from .groups import session
 auth = Blueprint('auth', __name__)
 
 
-@auth.route('/login', methods=['POST', 'GET'])
+@auth.route('/login/', methods=['POST', 'GET'])
 def login():
     if current_user.is_authenticated and request.method == 'GET':
         return redirect(url_for('groups.groups_menu'))
@@ -53,7 +53,7 @@ def login():
         return render_template('login.html', user=current_user), 200
 
 
-@auth.route('/sign-up', methods=["POST", 'GET'])
+@auth.route('/sign-up/', methods=["POST", 'GET'])
 def sign_up():
 
     if request.method == 'POST':
@@ -151,7 +151,7 @@ def sign_up():
         return render_template('sing_in.html', user=current_user), 200
 
 
-@auth.route('/logout', methods=["POST", "GET"])
+@auth.route('/logout/', methods=["POST", "GET"])
 def logout():
     if 'group_id' in session:
         print(session.get('group_id'))

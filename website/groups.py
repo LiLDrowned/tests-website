@@ -5,7 +5,7 @@ from psycopg2.extras import DictCursor
 
 groups = Blueprint('groups', __name__)
 
-@groups.route('/groups-menu',methods = ["POST","GET"])
+@groups.route('/groups-menu/',methods = ["POST","GET"])
 @login_required
 def groups_menu():
 
@@ -22,7 +22,7 @@ def groups_menu():
     return render_template('groups_menu.html',invitations = invitations,user = current_user,
                             groups = groups,page = 'Home')
 
-@groups.route('/group/<group_id>',methods = ["GET"])
+@groups.route('/group/<group_id>/',methods = ["GET"])
 @login_required
 def group(group_id):
 
@@ -81,7 +81,7 @@ def group(group_id):
         flash('You are not a member of this group!', category='error')
         return redirect(url_for('groups.groups_menu'))
 
-@groups.route('/create-group',methods = ["POST","GET"])
+@groups.route('/create-group/',methods = ["POST","GET"])
 @login_required
 def create_group():
 
@@ -91,7 +91,7 @@ def create_group():
 
         cur = conn.cursor(cursor_factory=DictCursor)
 
-        cur.execute("SELECT MAX(id) FROM groups")
+        cur.execute("SELECT MAX(group_id) FROM groups")
         group_id = cur.fetchone()
 
         if group_id[0] != None:
@@ -112,7 +112,7 @@ def create_group():
 
     return render_template('create_group.html',user = current_user)
 
-@groups.route('/people',methods = ["POST","GET"])
+@groups.route('/people/',methods = ["POST","GET"])
 @login_required
 def people():
 
@@ -161,19 +161,58 @@ def people():
         flash('You are not member of this group!', category='error')
         return redirect(url_for('groups.groups_menu'))
 
-@groups.route('/kick-person/<int:user_id>', methods = ["GET","DELETE"])
+@groups.route('/kick-person/<int:user_id>/', methods = ["GET","DELETE"])
 @login_required
 def kick_person(user_id):
     if 'group_id' in session:
 
         group_id = session.get('group_id')
-        return redirect(url_for('groups.group',group_id = group_id))
+
+        if 'admin' in session:
+            
+            cur = conn.cursor(cursor_factory=DictCursor)
+
+            cur.execute(f"DELETE FROM invitations WHERE group_id = '{group_id}' AND user_id = '{user_id}';")
+            conn.commit()
+
+            cur.execute(f"DELETE FROM groups WHERE group_id = '{group_id}' AND user_id = '{user_id}';")
+            conn.commit()
+
+            cur.execute(f"SELECT * FROM groups WHERE group_id = '{group_id}' AND group_admin = 'True';")
+            group_admin = cur.fetchone()
+            print(group_admin)
+
+            if group_admin == {}:
+                cur.execute(f"SELECT * FROM groups WHERE group_id = '{group_id}'")
+                first_user = cur.fetchone()
+
+                if first_user == {}:
+                    next_admin = first_user['user_id']
+                    print(f'novy admin {next_admin} id')
+                    cur.execute(f"UPDATE groups SET group_admin = 'True' WHERE group_id = '{group_id}'"
+                     f"AND user_id = '{next_admin}';")
+
+                else:
+                    print('neni nikto v skupine')
+                    return redirect(url_for('groups.leave-group',group_id = group_id))
+
+            else:
+                print('je admin')
+
+            cur.close()
+            return redirect(url_for('groups.group',group_id = group_id))
+
+        else:
+            flash("You don't have permision to do this action!" ,category='error')
+            return redirect(url_for('groups.group',group_id = group_id))
+
 
     else:
-        # flash()
+
+        flash('You are not member of the group!', category='error')
         return redirect(url_for('groups.groups-menu')) 
 
-@groups.route('/add-person/<int:user_id>', methods = ["GET", "PUT"])
+@groups.route('/add-person/<int:user_id>/', methods = ["GET", "PUT"])
 @login_required
 def add_person(user_id):
 
@@ -194,7 +233,7 @@ def add_person(user_id):
     flash('User has been invited!', category='success')
     return redirect(url_for('groups.people'))
 
-@groups.route('/join-group/<group_id>/<group_name>',methods = ["GET","PUT"])
+@groups.route('/join-group/<group_id>/<group_name>/',methods = ["GET","PUT"])
 @login_required
 def join_group(group_id,group_name):
     
@@ -211,17 +250,21 @@ def join_group(group_id,group_name):
 
     return redirect(url_for('groups.groups_menu'))
 
-@groups.route('/leave-group/<group_id>',methods = ["GET","DELETE"])
+@groups.route('/leave-group/<group_id>/',methods = ["GET","DELETE"])
 @login_required
 def leave_group(group_id):
+    print('yeah')
+    print(group_id)
 
     cur = conn.cursor(cursor_factory=DictCursor)
     # add admin to someone shen previous admin left the group !
+
+    cur.execute(f"DELETE FROM invitations WHERE group_id = '{group_id}'")
+    conn.commit()
     
     cur.execute(f"DELETE FROM groups WHERE group_id = '{group_id}';")
-    cur.execute(f"DELETE FROM invitations WHERE group_id = '{group_id}'")
-
     conn.commit()
+
     cur.close()
 
     return redirect(url_for('groups.groups_menu'))

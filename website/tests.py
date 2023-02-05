@@ -6,7 +6,7 @@ from .groups import session
 
 tests = Blueprint('tests', __name__)
 
-@tests.route('/create-test',methods = ["POST","GET"])
+@tests.route('/create-test/',methods = ["POST","GET"])
 @login_required
 def create_test():
     if 'group_id' in session:
@@ -38,7 +38,7 @@ def create_test():
     else:
         return redirect(url_for('groups.groups_menu'))
 
-@tests.route('/create-questions/<int:current_question>',methods = ["POST","GET"])
+@tests.route('/create-questions/<int:current_question>/',methods = ["POST","GET"])
 @login_required
 def create_questions(current_question):
 
@@ -50,8 +50,6 @@ def create_questions(current_question):
 
         else:
             admin = False
-
-        max_question = session.get('max_question')
 
         if request.method == 'POST':
             
@@ -75,6 +73,7 @@ def create_questions(current_question):
                 return save_question(current_question,number)
 
         else:
+            max_question = session.get('max_question')
             return render_template('question_create.html',user = current_user,page = 'Group',admin = admin,
                                 group_id = group_id,current_question = current_question
                                 ,max_question = max_question,questions = questions)
@@ -82,10 +81,40 @@ def create_questions(current_question):
     else:
         return redirect(url_for('groups.groups_menu'))
 
-
-@tests.route('/edit-test',methods = ["POST","GET"])
+@tests.route('/sessions-edit-test/<int:test_id>/')
 @login_required
-def edit_test(): 
+def sessions_edit_test(test_id):
+    global questions
+    questions = {}
+    user_id = current_user.id
+
+    cur = conn.cursor(cursor_factory=DictCursor)
+
+    cur.execute(f"SELECT * FROM questions WHERE user_id = '{user_id}' AND test_id = '{test_id}';")
+    users_questions = cur.fetchall()
+
+    cur.close()
+
+    question_number = 1
+    for question in users_questions:
+        questions[question_number] = {}
+        questions[question_number]['question'] = question['question']
+        questions[question_number]['answer1'] = question['asnwer1']
+        questions[question_number]['answer2'] = question['asnwer2']
+        questions[question_number]['answer3'] = question['asnwer3']
+        questions[question_number]['answer4'] = question['asnwer4']
+        questions[question_number]['right_answer'] = question['right_question']
+        question_number += 1
+
+    session['max_question'] = question_number - 1
+    session['test_id'] = test_id
+
+    return redirect(url_for('tests.edit_test',current_question = 1))
+
+
+@tests.route('/edit-test/<int:current_question>/',methods = ["POST","GET"])
+@login_required
+def edit_test(current_question): 
 
     if 'group_id' in session:
         group_id = session.get('group_id')
@@ -96,13 +125,38 @@ def edit_test():
         else:
             admin = False
 
-        return render_template('edit_test.html',user = current_user,page = 'Group',admin = admin,
-                                group_id = group_id)
+        if request.method == 'POST':
+            if request.form['action-btn'] == 'Delete question':
+                return delete_question(str(current_question))
+            
+            elif request.form['action-btn'] == 'Add question':
+                return add_question(str(current_question))
+
+            elif request.form['action-btn'] == 'Create test':
+                return save_question(current_question,'Update')
+            
+            elif request.form['action-btn'] == '<<':
+                return save_question(current_question,str(current_question -1))
+
+            elif request.form['action-btn'] == '>>':
+                return save_question(current_question,str(current_question + 1))
+            
+            else:
+                number = request.form.get('action-btn')
+                return save_question(current_question,str(number))
+            
+        else:
+            max_question = session.get('max_question')
+
+            print(questions)
+            return render_template('edit_test.html',user = current_user,page = 'Group',admin = admin,
+                            group_id = group_id,questions = questions,current_question = current_question,
+                            max_question = max_question)
 
     else:
         return redirect(url_for('groups.groups_menu'))
 
-@tests.route('/start-test/<int:test_id>/<int:current_question>',methods = ["POST","GET"])
+@tests.route('/start-test/<int:test_id>/<int:current_question>/',methods = ["POST","GET"])
 @login_required
 def start_test(test_id,current_question): 
     global answers
@@ -154,7 +208,7 @@ def start_test(test_id,current_question):
     else:
         return redirect(url_for('groups.groups_menu'))
 
-@tests.route('/test_results/<int:current_question>',methods = ["GET"])
+@tests.route('/test_results/<int:current_question>/',methods = ["GET"])
 @login_required
 def test_results(current_question):
 
@@ -204,7 +258,7 @@ def test_results(current_question):
         return redirect(url_for('groups.groups_menu'))
 
 
-@tests.route('/delete-test/<test_id>',methods = ["DELETE","GET"])
+@tests.route('/delete-test/<test_id>/',methods = ["DELETE","GET"])
 @login_required
 def delete_test(test_id): 
 
@@ -225,20 +279,26 @@ def delete_test(test_id):
     else:
         return redirect(url_for('groups.groups_menu'))
 
+###### Creatting new test with questions #####
 
+# adding question 
 def add_question(current_question):
 
     max_question = session.get('max_question')
     session.pop('max_question' ,None)
     session['max_question'] = max_question +1
 
-    return save_question(current_question,max_question + 1)
+    if isinstance(current_question,int):
+        return save_question(current_question,max_question + 1)
+    
+    else:
+        return save_question(int(current_question),str(max_question + 1))
 
+# saving question
 def save_question(current_question,next_question):
     global questions
 
     if current_question not in questions:
-        print('we in',current_question)
         questions[current_question] = {}
 
     question = request.form.get('question')
@@ -249,8 +309,6 @@ def save_question(current_question,next_question):
     answer4 = request.form.get('answer4')
 
     right_answer = request.form.get('right_answer')
-    print(right_answer)
-
     answers_val = [question,answer1,answer2,answer3,answer4]
     answers_str = ['question','answer1','answer2','answer3','answer4','right_answer']
 
@@ -259,6 +317,7 @@ def save_question(current_question,next_question):
             answers_val.append(f'a{numbers + 1}')
 
     for number in range(0,6):
+        
         if answers_val[number] != '':
             try:
                 del questions[current_question][answers_str[number]]
@@ -266,20 +325,30 @@ def save_question(current_question,next_question):
             except:
                 questions[current_question][answers_str[number]] = answers_val[number]
 
-    print(questions)
-
     if next_question == 'Complete':
         return complete_test()
 
-    return redirect(url_for('tests.create_questions',current_question = next_question))
+    elif next_question == 'Update':
+        return update_test()
+    
+    if isinstance(next_question,int):
+        return redirect(url_for('tests.create_questions',current_question = next_question))
 
+    else:
+        return redirect(url_for('tests.edit_test',current_question = int(next_question)))
+
+# deleting question 
 def delete_question(current_question):
     global questions
 
     questions_change = []
 
+    questions.pop(int(current_question))
+    print('after delete',questions)
+
     for question in questions:
-        if question > current_question:
+        print('question',question)
+        if question > int(current_question):
             questions_change.append(question)
     
     for number in questions_change:
@@ -290,13 +359,27 @@ def delete_question(current_question):
     if max_question > 1 :
         max_question -= 1
         session['max_question'] = max_question
+    
+    print('delete',questions)
 
-    if current_question != 1 and max_question < current_question:
-        return redirect(url_for('tests.create_questions',current_question = current_question - 1))
+    if isinstance(current_question,int):
 
+        if current_question != 1 and max_question < current_question:
+            return redirect(url_for('tests.create_questions',current_question = current_question - 1))
+
+        else:
+            return redirect(url_for('tests.create_questions',current_question = current_question ))
+    
     else:
-        return redirect(url_for('tests.create_questions',current_question = current_question ))
 
+        if int(current_question) != 1 and max_question < int(current_question):
+            return redirect(url_for('tests.edit_test',current_question = int(current_question) - 1))
+
+        else:
+            return redirect(url_for('tests.edit_test',current_question = int(current_question) ))
+    
+
+# completing test
 def complete_test():
     global questions
 
@@ -335,7 +418,9 @@ def complete_test():
     questions.clear()
 
     return redirect(url_for('groups.group',group_id = group_id))
+#####
 
+##### Doing test #####
 def save_answer(current_question,next_question):
     global answers
     test_id = session.get('test_id')
@@ -352,3 +437,44 @@ def save_answer(current_question,next_question):
         return redirect(url_for('tests.test_results', current_question = 1))
 
     return redirect(url_for('tests.start_test',test_id = test_id,current_question = next_question))
+#####
+
+##### Editting test #####
+def update_test():
+    user_id = current_user.id
+    test_id = session.get('test_id')
+    group_id = session.get('group_id')
+    max_question = session.get('max_question')
+
+    del session['test_id']
+    del session['max_question']
+
+    cur = conn.cursor(cursor_factory=DictCursor)
+    
+    cur.execute(f"UPDATE tests SET number_questions = '{max_question}' WHERE test_id = '{test_id}';")
+
+    cur.execute(f"DELETE FROM questions WHERE user_id = '{user_id}' AND test_id = '{test_id}';")
+
+    conn.commit()
+
+    str_val = ('question','answer1','answer2','answer3','answer4','right_answer')
+
+    for question in questions:
+        
+        sql = "INSERT INTO questions(question,asnwer1,asnwer2,asnwer3,asnwer4,right_question,test_id,user_id,question_number) values(%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+
+        val = (f'{questions[question][str_val[0]]}',f'{questions[question][str_val[1]]}'
+        ,f'{questions[question][str_val[2]]}',f'{questions[question][str_val[3]]}'
+        ,f'{questions[question][str_val[4]]}',f'{questions[question][str_val[5]]}',f'{test_id}'
+        ,f'{user_id}',f'{question}')
+
+        cur.execute(sql,val)
+        conn.commit()
+    
+    cur.close() 
+    questions.clear()
+
+    return redirect(url_for('groups.group',group_id = group_id))
+
+
+

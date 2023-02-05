@@ -33,9 +33,17 @@
                     <tr>
 
                       <td class="col-md-8 text-center">{{ member['name'] }}
-                        {% if admin == True %}
-                            <a class="btn btn-danger" href="#">Kick</a>
+
+                        {% if current_user.id == member['user_id'] %}
+
+                          <a class="btn btn-danger" href="/groups/kick-person/{{ current_user.id }}/">Leave</a>
+
+                        {% elif admin == True %}
+
+                          <a class="btn btn-danger" href="/groups/kick-person/{{ member['user_id'] }}/">Kick</a>
+
                         {% endif %}
+
                       </td>
 
                     </tr>
@@ -62,7 +70,7 @@
 
                       <td class="col-md-8 text-center">{{ invite['name'] }}
                         {% if admin == True %}
-                            <a class="btn btn-danger" href="#">Cancel</a>
+                            <a class="btn btn-danger" href="/groups/kick-person/{{ invite['user_id']}}/">Cancel</a>
                         {% endif %}
                       </td>
 
@@ -101,7 +109,7 @@
                     <td class="col-md-8 text-center">{{ test[1] }}</td>
                     <td class="text-center">
                         <a class="btn btn-success" href="/tests/start-test/{{ test['test_id'] }}/1">Start</a>
-                        <a class="btn btn-primary" href="#">Edit</a>
+                        <a class="btn btn-primary" href="/tests/sessions-edit-test/{{test['test_id']}}/">Edit</a>
 
                         {% if admin == True %}
 
