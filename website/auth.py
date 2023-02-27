@@ -161,5 +161,6 @@ def logout():
         print(session.get('group_id'))
         print(session.get('admin'))
 
+    flash("You have been successfully logged out!",category='success') 
     logout_user()
     return redirect(url_for('auth.login'))

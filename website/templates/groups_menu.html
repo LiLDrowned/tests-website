@@ -18,14 +18,17 @@
 
           {% if groups != [] %}
           
-            <h5>Your groups</h5>
+            <div class="row offset-md-4 offset-4">
+              <i class="bi bi-collection"></i>
+              <span><h5> Your groups</h5> </span>
+            </div>
 
-            <table class="table table-bordered">
+            <table class="table table-bordered table-light">
                 <thead>
                   <tr>
 
-                    <th scope="col" class="text-center">Group name</th>
-                    <th scope="col" class="text-center">Actions</th>
+                    <th scope="col" class="text-center bi bi-tag">Group name</th>
+                    <th scope="col" class="text-center bi bi-tools">Actions</th>
                     
                   </tr>
                 </thead>
@@ -34,9 +37,11 @@
                   {% for group in groups %}
                   <tr>
 
-                    <td class="col-md-8 text-center">{{ group[1] }}</td>
-                    <td class="text-center"><a class="btn btn-primary" test-id="go-to" href="/groups/group/{{group[2]}}">Go to</a>
-                        <a class="btn btn-danger" href="/groups/leave-group/{{ group['group_id'] }}">Leave</a></td>
+                    <td class="col-md-8 text-center">{{ group['group_name'] }}</td>
+                    <td class="text-center"><a class="btn btn-success bi bi-box-arrow-in-right" test-id="go-to" 
+                      href="/groups/group/{{ group['group_id'] }}"> Go</a>
+                        <a class="btn btn-danger bi bi-trash"
+                         href="/groups/deleting-group/{{ group['group_id'] }}"> Delete</a></td>
 
 
                   </tr>
@@ -44,7 +49,13 @@
                 </tbody>
             </table>
             {% else %}
-                <h4>No groups</h4>
+                
+              <div class="row offset-md-4 offset-4">
+
+                <i class="bi bi-collection"></i>
+                <span><h4>No groups</h4> </span>
+
+              </div>
             {% endif %}
 
         </div>
@@ -55,14 +66,19 @@
 
           {% if invitations != [] %}
 
-           <h5>Groups Invites</h5>
+          <div class="row offset-md-4 offset-4">
 
-            <table class="table table-bordered">
+            <i class="bi bi-envelope-paper"></i>
+            <span><h5> Groups Invites</h5> </span>
+            
+          </div>
+
+            <table class="table table-bordered table-light">
                 <thead>
                   <tr>
 
-                    <th scope="col" class="text-center">Group name</th>
-                    <th scope="col" class="text-center">Actions</th>
+                    <th scope="col" class="text-center bi bi-tag">Group name</th>
+                    <th scope="col" class="text-center bi bi-tools">Actions</th>
 
                   </tr>
 
@@ -73,9 +89,10 @@
                     <tr>
   
                       <td class="col-md-8 text-center">{{ invite[1] }}</td>
-                      <td class="text-center"><a class="btn btn-primary" 
-                        href="/groups/join-group/{{invite[2]}}/{{invite[1]}}">Accept</a>
-                          <a class="btn btn-danger" href="#">Decline</a></td>
+                      <td class="text-center"><a class="btn btn-primary bi bi-check" 
+                        href="/groups/join-group/{{invite[2]}}/{{invite[1]}}/">Acpt</a>
+                          <a class="btn btn-danger bi bi-trash" 
+                          href="/groups/cancel-invite/{{invite['group_id']}}/">Del</a></td>
   
   
                     </tr>
@@ -83,7 +100,14 @@
                 </tbody>
             </table>
             {% else %}
-              <h4>No invites</h4>
+
+            <div class="row offset-md-4 offset-4">
+
+              <i class="bi bi-envelope-paper"></i>
+              <span><h4> No invites</h4> </span>
+              
+            </div>
+
             {% endif %}
           </form>
         </div>

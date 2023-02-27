@@ -13,7 +13,11 @@
     </div>
 
     <div class="col-xs-8 col-md-8 offset-md-2">
-      <div class="input-group mb-3 mx-auto">
+      <div class="input-group mb-3 mx-auto question">
+
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon1"><i class="bi bi-question-diamond"></i></span>
+        </div>
           {% if 'question' in questions[current_question] %}
 
             <input type="text" class="form-control" test-id="question-input" name="question" 
@@ -29,10 +33,11 @@
     </div>
 
     <div class="col-xs-8 col-md-8 offset-md-2">
-      <div class="input-group mb-3 mx-auto">
+      <div class="input-group mb-3 mx-auto form-check form-check-inline">
+        
           {% if 'right_answer' not in questions[current_question] %}
 
-            <input class="form-check-input" type="radio" name="right_answer" id="a1" 
+            <input class="form-check-input" type="radio" name="right_answer" id="a1"
             value="a1" checked>
           
           {% elif questions[current_question]['right_answer'] == 'a1' %}
@@ -46,7 +51,11 @@
             value="a1">
 
           {% endif %}
-
+          
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1"><i class="bi bi-1-circle"></i></span>
+          </div>
+          
           {% if 'answer1' in questions[current_question] %}
 
             <input type="text" for="a1" class="form-control" test-id="asnwer1-input" name="answer1" 
@@ -55,14 +64,14 @@
           {% else %}
 
             <input type="text" class="form-control" for="a1"
-            test-id="asnwer1-input" name="answer1" placeholder="corrent answer a)">
+            test-id="asnwer1-input" name="answer1" placeholder="a)">
 
           {% endif %}
       </div>
     </div>
 
     <div class="col-xs-8 col-md-8 offset-md-2">
-      <div class="input-group mb-3 mx-auto">
+      <div class="input-group mb-3 mx-auto form-check form-check-inline">
 
           {% if 'right_answer' in questions[current_question] %}
 
@@ -85,6 +94,11 @@
 
           {% endif %}
 
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1"><i class="bi bi-2-circle"></i></span>
+          </div>
+          
+
           {% if 'answer2' in questions[current_question] %}
 
             <input type="text" class="form-control" test-id="answer2-input" name="answer2" for="a2"
@@ -100,7 +114,7 @@
     </div>
 
     <div class="col-xs-8 col-md-8 offset-md-2">
-      <div class="input-group mb-3 mx-auto">
+      <div class="input-group mb-3 mx-auto form-check form-check-inline">
 
           {% if 'right_answer' in questions[current_question] %}
 
@@ -123,6 +137,11 @@
 
           {% endif %}
 
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1"><i class="bi bi-3-circle"></i></span>
+          </div>
+          
+
           {% if 'answer3' in questions[current_question] %}
 
             <input type="text" class="form-control" test-id="answer3-input" name="answer3" for="a3"
@@ -138,7 +157,7 @@
     </div>
 
     <div class="col-xs-8 col-md-8 offset-md-2">
-      <div class="input-group mb-3 mx-auto">
+      <div class="input-group mb-3 mx-auto form-check form-check-inline">
 
           {% if 'right_answer' in questions[current_question] %}
 
@@ -161,6 +180,11 @@
 
           {% endif %}
 
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1"><i class="bi bi-4-circle"></i></span>
+          </div>
+          
+
           {% if 'answer4' in questions[current_question] %}
 
             <input type="text" class="form-control" test-id="answer4-input" name="answer4" for="a4"
@@ -179,15 +203,21 @@
     <div class="row">
 
       <div class="p-3 col-xs-4 col-md-2 offset-md-2">
-        <input class="btn btn-danger btn-block" name="action-btn" type="submit" value="Delete question">
+        <button class="btn btn-danger btn-block" name="action-btn" type="submit" value="Delete">
+          <i class="bi bi-file-earmark-x"></i> Delete
+        </button>
       </div>
    
       <div class="p-3 col-xs-4 col-md-2 offset-md-1">
-        <input class="btn btn-primary btn-block" name="action-btn" type="submit" value="Add question">
+        <button class="btn btn-primary btn-block" name="action-btn" type="submit" value="Add">
+          <i class="bi bi-file-earmark-plus"></i> Add
+        </button>
       </div>
 
       <div class="p-3 col-xs-4 col-md-2 offset-md-1">
-        <input class="btn btn-success btn-block" name="action-btn" type="submit" value="Create test">
+        <button class="btn btn-success btn-block" name="action-btn" type="submit" value="Done">
+          <i class="bi bi-check2-square"></i> Done
+        </button>
       </div>
 
     </div>

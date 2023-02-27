@@ -18,7 +18,7 @@
 
     <br> 
 
-    {% if answers[current_question] != 'a1' %}
+    {% if questions[current_question -1]['right_question'] != 'a1' %}
 
       <div class="p-3 col-xs-8 col-md-8 offset-md-2 border">
 
@@ -47,11 +47,12 @@
 
     <br>
 
-    {% if answers[current_question] != 'a2' %}
+    {% if questions[current_question -1]['right_question'] != 'a2' %}
 
     <div class="p-3 col-xs-8 col-md-8 offset-md-2 border">
 
       <div class="form-check form-check-inline">
+        
         <input class="form-check-input" type="radio" name="answers_options" id="a2" value="a2">
         <label class="form-check-label" for="a2">{{ questions[current_question - 1]['asnwer2'] }}
         </label>
@@ -64,6 +65,7 @@
     <div class="p-3 col-xs-8 col-md-8 offset-md-2 border">
 
       <div class="form-check form-check-inline">
+        
         <input class="form-check-input" type="radio" name="answers_options" id="a2" 
         value="a2" checked>
         <label class="form-check-label" for="a2">{{ questions[current_question - 1]['asnwer2'] }}
@@ -76,11 +78,12 @@
     
   <br>
 
-  {% if answers[current_question] != 'a3' %}
+  {% if questions[current_question -1]['right_question'] != 'a3' %}
 
     <div class="p-3 col-xs-8 col-md-8 offset-md-2 border">
 
       <div class="form-check form-check-inline">
+        
         <input class="form-check-input" type="radio" name="answers_options" id="a3" value="a3">
         <label class="form-check-label" for="a3">{{ questions[current_question - 1]['asnwer3'] }}
         </label>
@@ -93,6 +96,7 @@
   <div class="p-3 col-xs-8 col-md-8 offset-md-2 border">
 
     <div class="form-check form-check-inline">
+      
       <input class="form-check-input" type="radio" name="answers_options" id="a3" 
       value="a3" checked>
       <label class="form-check-label" for="a3">{{ questions[current_question - 1]['asnwer3'] }}
@@ -105,11 +109,12 @@
 
   <br>
 
-  {% if answers[current_question] != 'a4' %}
+  {% if questions[current_question -1]['right_question'] != 'a4' %}
 
     <div class="p-3 col-xs-8 col-md-8 offset-md-2 border">
 
       <div class="form-check form-check-inline">
+        
         <input class="form-check-input" type="radio" name="answers_options" id="a4" value="a4">
         <label class="form-check-label" for="a4">{{ questions[current_question - 1]['asnwer4'] }}
         </label>
@@ -122,6 +127,7 @@
   <div class="p-3 col-xs-8 col-md-8 offset-md-2 border">
 
     <div class="form-check form-check-inline">
+      
       <input class="form-check-input" type="radio" name="answers_options" id="a4" 
       value="a4" checked>
       <label class="form-check-label" for="a4">{{ questions[current_question - 1]['asnwer4'] }}
@@ -132,13 +138,19 @@
 
   {% endif %}
 
+
+    
     
     <div class="row">
 
-      <div class="p-3 col-xs-4 col-md-2 offset-md-5">
-        <button class="btn btn-success btn-block" name="action-btn" type="submit" value="Done">
-          <i class="bi bi-check"></i> Done
-        </button>
+      <div class="p-3 col-xs-4 col-md-2 offset-md-3">
+        <a class="btn btn-danger btn-block bi bi-file-earmark-minus" 
+        href="/tests/actions-delete-questions/{{ current_question }}/Delete/{{questions[current_question-1]['question_id']}}/"> Question</a>  
+      </div>
+
+      <div class="p-3 col-xs-4 col-md-2 offset-md-2">
+        <a class="btn btn-danger btn-block bi bi-folder-minus" 
+        href="/tests/actions-delete-questions/{{current_question}}/Delete Test/{{questions[current_question-1]['question_id']}}/"> Test</a>
       </div>
 
     </div>
@@ -148,13 +160,13 @@
         
         {% if current_question != 1 %}
 
-          <li class="page-item"><input type="submit" class="page-link" value="<<"
-            name="action-btn"></li>
+        <li class="page-item "><a href="/tests/delete-questions/{{current_question - 1}}/" 
+          class="page-link"><<</a></li>
 
         {% else %}
 
-          <li class="page-item disabled"><input type="submit" class="page-link" value="<<"
-            name="action-btn"></li>
+        <li class="page-item "><a href="/tests/delete-questions/{{current_question - 1}}/" 
+          class="page-link"><<</a></li>
 
         {% endif %}
 
@@ -162,13 +174,13 @@
 
           {% if number == current_question %}
               
-          <li class="page-item active"><input type="submit" class="page-link" value="{{ number }}"
-              name="action-btn"></li>
+          <li class="page-item active"><a href="/tests/delete-questions/{{ number }}/" 
+            class="page-link">{{ number}}</a></li>
 
           {% else %}
 
-          <li class="page-item"><input type="submit" class="page-link" value="{{ number }}"
-            name="action-btn"></li>
+          <li class="page-item"><a href="/tests/delete-questions/{{ number }}/" 
+            class="page-link">{{ number}}</a></li>
 
           {% endif %}
 
@@ -176,13 +188,13 @@
 
         {% if current_question != max_question %}
 
-          <li class="page-item"><input type="submit" class="page-link" value=">>"
-            name="action-btn"></li>
+          <li class="page-item "><a href="/tests/delete-questions/{{current_question + 1}}/" 
+            class="page-link">>></a></li>
 
         {% else %}
 
-          <li class="page-item disabled"><input type="submit" class="page-link" value=">>"
-            name="action-btn"></li>
+          <li class="page-item disabled"><a href="/tests/delete-questions/{{current_question + 1}}/" 
+            class="page-link">>></a></li>
 
         {% endif %}
 

@@ -86,25 +86,23 @@ def group(group_id):
 def create_group():
 
     if request.method == 'POST':
+
         group_name = request.form.get('group_name')
         user_id = current_user.id
 
         cur = conn.cursor(cursor_factory=DictCursor)
 
-        cur.execute("SELECT MAX(group_id) FROM groups")
-        group_id = cur.fetchone()
-
-        if group_id[0] != None:
-            group_id = int(group_id[0]) +1 
-        
-        else:
-            group_id = 1
-
-        sql = "INSERT INTO groups(group_name,user_id,group_admin,group_id) values (%s,%s,%s,%s)"
-        values = (f'{group_name}',f'{user_id}','True',group_id)
+        sql = "INSERT INTO groups(group_name,user_id,group_admin) values (%s,%s,%s) RETURNING id"
+        values = (f'{group_name}',f'{user_id}','True')
 
         cur.execute(sql,values)
         conn.commit()
+
+        group_id = cur.fetchone()['id']
+
+        cur.execute(f"UPDATE groups SET group_id = '{group_id}' WHERE id = '{group_id}';")
+        conn.commit()
+
         cur.close()
 
         flash('Group has been created!', category='success')
@@ -133,6 +131,7 @@ def people():
                 finds = cur.fetchall()
                 cur.close()
 
+                flash('User has been invited!', category='success')
                 return render_template('people.html',user = current_user,people = finds ,page = 'Group',
                                     group_id = group_id)
 
@@ -178,39 +177,133 @@ def kick_person(user_id):
             cur.execute(f"DELETE FROM groups WHERE group_id = '{group_id}' AND user_id = '{user_id}';")
             conn.commit()
 
-            cur.execute(f"SELECT * FROM groups WHERE group_id = '{group_id}' AND group_admin = 'True';")
-            group_admin = cur.fetchone()
-            print(group_admin)
-
-            if group_admin == {}:
-                cur.execute(f"SELECT * FROM groups WHERE group_id = '{group_id}'")
-                first_user = cur.fetchone()
-
-                if first_user == {}:
-                    next_admin = first_user['user_id']
-                    print(f'novy admin {next_admin} id')
-                    cur.execute(f"UPDATE groups SET group_admin = 'True' WHERE group_id = '{group_id}'"
-                     f"AND user_id = '{next_admin}';")
-
-                else:
-                    print('neni nikto v skupine')
-                    return redirect(url_for('groups.leave-group',group_id = group_id))
-
-            else:
-                print('je admin')
-
             cur.close()
+
+            flash('User has been kicked from group!', category='success')
             return redirect(url_for('groups.group',group_id = group_id))
 
         else:
             flash("You don't have permision to do this action!" ,category='error')
             return redirect(url_for('groups.group',group_id = group_id))
 
+    else:
+
+        flash('You are not member of the group!', category='error')
+        return redirect(url_for('groups.groups_menu')) 
+
+@groups.route('/leave-group/<int:user_id>/', methods = ["GET","DELETE"])
+@login_required
+def leave_group(user_id):
+    if 'group_id' in session:
+        group_id = session.get('group_id')
+
+        cur = conn.cursor(cursor_factory=DictCursor)
+
+        cur.execute(f"SELECT * FROM groups WHERE group_id = '{group_id}' AND user_id = '{user_id}';")
+        user = cur.fetchone()
+
+        if user['group_admin'] == 'True':
+            cur.execute(f"SELECT * FROM groups WHERE group_id = '{group_id}';")
+            all_users = cur.fetchall()
+
+            if len(all_users) == 1:
+                cur.execute(f"DELETE FROM invitations WHERE group_id = '{group_id}';")
+
+                cur.execute(f"DELETE FROM questions WHERE group_id = '{group_id}'")
+
+                cur.execute(f"DELETE FROM tests WHERE group_id = '{group_id}'")
+
+                cur.execute(f"DELETE FROM groups WHERE user_id = '{user_id}' AND group_id = '{group_id}';")
+
+                conn.commit()
+                cur.close()
+
+                flash('You have left the group!', category='success')
+                return redirect(url_for('groups.groups_menu'))
+            
+            else:
+                cur.execute(f"DELETE FROM groups WHERE user_id = '{user_id}' AND group_id = '{group_id}';")
+                
+                cur.execute(f"SELECT * FROM groups WHERE group_id = '{group_id}';")
+                users = cur.fetchone()['user_id']
+
+                cur.execute("UPDATE groups SET group_admin = 'True' "
+                           f" WHERE group_id = '{group_id}' AND user_id = '{users}'")
+
+                conn.commit()
+                cur.close()
+
+                flash('You have left the group!', category='success')
+                return redirect(url_for('groups.groups_menu'))
+        else:
+            cur.execute(f"DELETE FROM groups WHERE user_id = '{user_id}' AND group_id = '{group_id}';")
+            
+            conn.commit()
+            cur.close()
+
+            flash('You have left the group!', category='success')
+            return redirect(url_for('groups.groups_menu'))
 
     else:
 
         flash('You are not member of the group!', category='error')
-        return redirect(url_for('groups.groups-menu')) 
+        return redirect(url_for('groups.groups_menu')) 
+
+@groups.route('/deleting-group/<int:group_id>/', methods = ["GET","DELETE"])
+@login_required
+def delete_group(group_id):
+    
+        user_id = current_user.id
+        group_id = session.get('group_id')
+
+        cur = conn.cursor(cursor_factory=DictCursor)
+
+        cur.execute(f"SELECT * FROM groups WHERE group_id = '{group_id}' AND user_id = '{user_id}';")
+        user = cur.fetchone()
+
+        if user['group_admin'] == 'True':
+            cur.execute(f"SELECT * FROM groups WHERE group_id = '{group_id}';")
+            all_users = cur.fetchall()
+
+            if len(all_users) == 1:
+                cur.execute(f"DELETE FROM invitations WHERE group_id = '{group_id}';")
+
+                cur.execute(f"DELETE FROM questions WHERE group_id = '{group_id}'")
+
+                cur.execute(f"DELETE FROM tests WHERE group_id = '{group_id}'")
+
+                cur.execute(f"DELETE FROM groups WHERE user_id = '{user_id}' AND group_id = '{group_id}';")
+
+                conn.commit()
+                cur.close()
+
+                flash('You have left the group!', category='success')
+                return redirect(url_for('groups.groups_menu'))
+            
+            else:
+                cur.execute(f"DELETE FROM groups WHERE user_id = '{user_id}' AND group_id = '{group_id}';")
+                
+                cur.execute(f"SELECT * FROM groups WHERE group_id = '{group_id}';")
+                users = cur.fetchone()['user_id']
+
+                cur.execute("UPDATE groups SET group_admin = 'True' "
+                           f" WHERE group_id = '{group_id}' AND user_id = '{users}'")
+
+                conn.commit()
+                cur.close()
+
+                flash('You have left the group!', category='success')
+                return redirect(url_for('groups.groups_menu'))
+        else:
+            cur.execute(f"DELETE FROM groups WHERE user_id = '{user_id}' AND group_id = '{group_id}';")
+            
+            conn.commit()
+            cur.close()
+
+            flash('You have left the group!', category='success')
+            return redirect(url_for('groups.groups_menu'))
+
+
 
 @groups.route('/add-person/<int:user_id>/', methods = ["GET", "PUT"])
 @login_required
@@ -248,23 +341,19 @@ def join_group(group_id,group_name):
     conn.commit()
     cur.close()
 
+    flash('You have been added to the group!',category='success' )
     return redirect(url_for('groups.groups_menu'))
 
-@groups.route('/leave-group/<group_id>/',methods = ["GET","DELETE"])
+@groups.route('/cancel-invite/<int:group_id>/',methods = ["GET","PUT"])
 @login_required
-def leave_group(group_id):
-    print('yeah')
-    print(group_id)
+def cancel_invite(group_id):
+    user_id = current_user.id
 
     cur = conn.cursor(cursor_factory=DictCursor)
-    # add admin to someone shen previous admin left the group !
+    cur.execute(f"DELETE FROM invitations WHERE user_id = '{user_id}' AND group_id = '{group_id}'")
 
-    cur.execute(f"DELETE FROM invitations WHERE group_id = '{group_id}'")
     conn.commit()
-    
-    cur.execute(f"DELETE FROM groups WHERE group_id = '{group_id}';")
-    conn.commit()
-
     cur.close()
 
+    flash('Group invitation has been declined!',category='success')
     return redirect(url_for('groups.groups_menu'))

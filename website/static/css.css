@@ -1,10 +1,40 @@
-container {
-   margin-top: 20;
+*{
+   font-family: montserrat;
+}
+body{
+   background-color:#f1fbff;
+}
+.radio-css{
+
+   margin-top: 10px;
 }
 
-.top5 { margin-top:5px; }
-.top7 { margin-top:7px; }
-.top10 { margin-top:10px; }
-.top15 { margin-top:15px; }
-.top17 { margin-top:17px; }
-.top30 { margin-top:30px; }
+.question{
+
+   padding-left: 5px;
+
+}
+.navbar-nav .nav-item .nav-link {
+    color: black;
+}
+.navbar-nav .nav-item.active .nav-link,
+.navbar-nav .nav-item:hover .nav-link {
+    color: rgb(243, 173, 42);
+}
+.btn-primary:hover {
+  color: black;
+  background-color: #04c3ee;
+  border-color: #5b288e;
+}
+
+.btn-success:hover {
+  color: black;
+  background-color: #8df015;
+  border-color: #0f3d1c;
+}
+
+.btn-danger:hover {
+   color: black;
+   background-color: #f00e0e;
+   border-color: #500b28;
+ }

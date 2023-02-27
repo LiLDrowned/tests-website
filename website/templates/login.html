@@ -8,7 +8,7 @@
 
 <form action = "/auth/login" method="POST">
 
-    <div class="p-3 col-md-2 offset-md-5 offset-xs-4">
+    <div class="p-3 col-sm-9 offset-sm-1 col-12 text-center">
         <h4>Login</h4>
     </div>
     
@@ -17,8 +17,11 @@
     </div>
     
     <div class="col-xs-7 col-md-7 offset-md-2">
-        <div class="input-group mb-3 ">
-            <input type="text" class="form-control" test-id="email-input" name="email" placeholder="Email">
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1"><i class="bi bi-envelope"></i></span>
+            </div>
+            <input type="text" class="form-control" test-id="email-input" name="email" aria-label="Mute" placeholder="Email">
         </div>
     </div>
 
@@ -28,12 +31,16 @@
 
     <div class="col-xs-7 col-md-7 offset-md-2">
         <div class="input-group mb-3">
-            <input type="password" class="form-control" test-id="password-input" name="password" placeholder="password">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1"><i class="bi bi-lock"></i></span>
+            </div>
+            <input type="password" class="form-control" test-id="password-input" name="password" placeholder="Password">
         </div>
     </div>
 
-    <div class="p-3 col-xs-12 col-md-3 offset-md-4">
-        <input class="btn btn-primary btn-block" test-id="login-btn" type="submit" value="Login">
+    <div class="p-3 col-xs-12 col-md-3 offset-md-4 input-group">
+        <button class="btn btn-primary btn-block hover" test-id="login-btn" type="submit">
+            <i class="bi bi-box-arrow-in-right"></i> Login</button>
     </div>
 
 </form>

@@ -14,13 +14,14 @@
     <div class="row">
       <div class="col-md-3 text-center">
 
-            <table class="table table-bordered">
+            <table class="table table-bordered table-light">
 
                 <thead>
 
                   <tr>
                     
-                    <th scope="col" class="text-center">Members</th>
+                    <th scope="col" class="text-center bi bi-people">Members</th>
+                    <th scope="col" class="text-center bi bi-tools">Action</th>
                     
                   </tr>
 
@@ -32,16 +33,21 @@
 
                     <tr>
 
-                      <td class="col-md-8 text-center">{{ member['name'] }}
+                      <td class="col-md-8 col-sm-7 col-7 text-center">{{ member['name'] }}
 
                         {% if current_user.id == member['user_id'] %}
+                        (You)
+                          <td class="col-md-8 col-sm-7 col-7 text-center">
 
-                          <a class="btn btn-danger" href="/groups/kick-person/{{ current_user.id }}/">Leave</a>
-
+                            <a class="btn btn-danger bi bi-x-circle-fill" href="/groups/leave-group/{{ current_user.id }}/"></a>
+                          
+                          </td>
                         {% elif admin == True %}
+                          <td class="col-md-8 col-sm-7 col-7 text-center">
 
-                          <a class="btn btn-danger" href="/groups/kick-person/{{ member['user_id'] }}/">Kick</a>
-
+                            <a class="btn btn-danger bi bi-person-dash-fill" href="/groups/kick-person/{{ member['user_id'] }}/"></a>
+                          
+                          </td>
                         {% endif %}
 
                       </td>
@@ -51,13 +57,14 @@
                   {% endfor %}
 
                 </tbody>
-
+                {% if invites != [] %}
                 <thead>
 
-                  <tr>
+                  <tr>  
                     
-                    <th scope="col" class="text-center">Invited memeber</th>
-                    
+                    <th scope="col" class="text-center bi bi-envelope-paper">Invited memeber</th>
+                    <th scope="col" class="text-center bi bi-tools">Action</th>
+
                   </tr>
 
                 </thead>
@@ -68,18 +75,22 @@
 
                     <tr>
 
-                      <td class="col-md-8 text-center">{{ invite['name'] }}
+                      <td class="col-md-8 text-center">{{ invite['name'] }}</td>
                         {% if admin == True %}
-                            <a class="btn btn-danger" href="/groups/kick-person/{{ invite['user_id']}}/">Cancel</a>
+                        <td> 
+                          <a class="btn btn-danger bi bi-x-circle-fill" 
+                            href="/groups/kick-person/{{ invite['user_id']}}/"></a>
+                        </td>
+                           
                         {% endif %}
-                      </td>
+                      
 
                     </tr>
 
                   {% endfor %}
 
                 </tbody>
-
+                {% endif %}
             </table>
 
         </div>
@@ -88,14 +99,14 @@
 
             {% if tests != [] %}
 
-            <table class="table table-bordered">
+            <table class="table table-bordered table-light">
 
                 <thead>
 
                   <tr>
 
-                    <th scope="col" class="text-center">Test name</th>
-                    <th scope="col" class="text-center">Actions</th>
+                    <th scope="col" class="text-center bi bi-card-checklist">Test name</th>
+                    <th scope="col" class="text-center bi bi-tools">Actions</th>
                     
                   </tr>
 
@@ -108,12 +119,15 @@
 
                     <td class="col-md-8 text-center">{{ test[1] }}</td>
                     <td class="text-center">
-                        <a class="btn btn-success" href="/tests/start-test/{{ test['test_id'] }}/1">Start</a>
-                        <a class="btn btn-primary" href="/tests/sessions-edit-test/{{test['test_id']}}/">Edit</a>
+                        <a class="btn btn-success bi bi-box-arrow-in-right" 
+                        href="/tests/sessions-start-test/{{ test['test_id'] }}/"> Start</a>
+                        <a class="btn btn-primary bi bi-pencil-fill" 
+                        href="/tests/sessions-edit-test/{{test['test_id']}}/"> Edit</a>
 
                         {% if admin == True %}
 
-                          <a class="btn btn-danger" href="/tests/delete-test/{{ test[0] }}">Delete</a>
+                          <a class="btn btn-danger bi-file-earmark-x" 
+                          href="/tests/sessions-delete-questions/{{ test['test_id'] }}"> Delete</a>
 
                         {% endif%}
 
@@ -129,10 +143,13 @@
             </table>
 
             {% else %}
+                <div class="row offset-md-6">
+                  <i class="bi bi-file-earmark"></i>
+                  <span><h4>No tests</h4> </span>
+                </div>
 
-                <h4>No tests</h4>
-                <div>
-                  <a class="btn btn-primary" href="/tests/create-test">Create test</a>
+                <div class="row offset-md-6">
+                  <a class="btn btn-primary bi-file-earmark-plus" href="/tests/create-test">Create test</a>
                 </div>
                 
             {% endif %}
