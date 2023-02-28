@@ -1,10 +1,11 @@
-FROM python:3.9-alpine
+FROM python:3.9-slim
+
+RUN apt-get update \
+    && apt-get -y install libpq-dev gcc
 
 WORKDIR /app
 
-COPY ./requirements .
-
-ENV PRODUCTION=production
+COPY ./requirements.txt .
 
 RUN pip install -r requirements.txt
 
