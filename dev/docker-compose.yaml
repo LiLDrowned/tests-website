@@ -2,7 +2,7 @@ version: '3'
 services:
   students_tests_server:
     build: 
-      context: .
+      context: ../
     container_name: students_tests_server
     ports:
       - 5000:5000
