@@ -58,26 +58,26 @@ def create_questions(current_question):
             admin = False
 
         if request.method == 'POST':
-            print(request.form['action-btn'])
+
             
             if request.form['action-btn'] == 'Delete':
-                return delete_question(current_question)
+                return delete_question(int(current_question))
             
             elif request.form['action-btn'] == 'Add':
-                return add_question(current_question)
+                return add_question(int(current_question))
 
             elif request.form['action-btn'] == 'Done':
-                return save_question(current_question,'Complete')
+                return save_question(int(current_question),'Complete')
             
             elif request.form['action-btn'] == '<<':
-                return save_question(current_question,current_question -1)
+                return save_question(current_question,int(current_question -1))
 
             elif request.form['action-btn'] == '>>':
-                return save_question(current_question,current_question + 1)
+                return save_question(current_question,(current_question + 1))
             
             else:
                 number = request.form.get('action-btn')
-                return save_question(current_question,number)
+                return save_question(current_question,int(number))
 
         else:
             max_question = session.get('max_question')
@@ -98,7 +98,7 @@ def sessions_edit_test(test_id):
 
     cur = conn.cursor(cursor_factory=DictCursor)
 
-    cur.execute(f"SELECT * FROM questions WHERE user_id = '{user_id}' AND test_id = '{test_id}';")
+    cur.execute(f"SELECT * FROM questions WHERE user_id = {user_id} AND test_id = {test_id};")
     users_questions = cur.fetchall()
 
     cur.close()
@@ -215,10 +215,10 @@ def start_test(current_question):
             test_id = session.get('test_id')
             cur = conn.cursor(cursor_factory=DictCursor)
 
-            cur.execute(f"SELECT * FROM questions WHERE test_id = '{test_id}'")
+            cur.execute(f"SELECT * FROM questions WHERE test_id = {test_id};")
             questions = cur.fetchall()
 
-            cur.execute(f"SELECT * FROM tests WHERE test_id = '{test_id}'")
+            cur.execute(f"SELECT * FROM tests WHERE test_id = {test_id};")
             test = cur.fetchone()
 
             cur.close()
@@ -249,10 +249,10 @@ def test_results(current_question):
 
         cur = conn.cursor(cursor_factory=DictCursor)
 
-        cur.execute(f"SELECT right_question FROM questions WHERE test_id = '{test_id}';")
+        cur.execute(f"SELECT right_question FROM questions WHERE test_id = {test_id};")
         right_answers = cur.fetchall()
 
-        cur.execute(f"SELECT * FROM questions WHERE test_id = '{test_id}'")
+        cur.execute(f"SELECT * FROM questions WHERE test_id = {test_id};")
         questions = cur.fetchall()
 
         cur.close()
@@ -261,11 +261,15 @@ def test_results(current_question):
         for ele in right_answers:
             number_questions += 1
 
-
         points = 0
         all_answers = {}
 
+
         for ele in range(1,number_questions + 1):
+            
+            if ele not in answers:
+                answers[ele] = ''
+
             if right_answers[ele - 1]['right_question'] == answers[ele]:
                 all_answers[ele] = answers[ele]
                 points += 1
@@ -293,7 +297,7 @@ def session_delete_question(test_id):
 
             cur = conn.cursor(cursor_factory=DictCursor)
 
-            cur.execute(f"SELECT * FROM tests WHERE test_id = '{test_id}'")
+            cur.execute(f"SELECT * FROM tests WHERE test_id = {test_id};")
             number_questions = cur.fetchone()
 
             cur.close()
@@ -325,7 +329,7 @@ def delete_questions(current_question):
 
             cur = conn.cursor(cursor_factory=DictCursor)
             
-            cur.execute(f"SELECT * FROM questions WHERE test_id = '{test_id}';")
+            cur.execute(f"SELECT * FROM questions WHERE test_id = {test_id};")
             questions = cur.fetchall()
 
             cur.close()
@@ -356,15 +360,14 @@ def actions_delete_questions(current_question,action,question_id):
                 
                 max_question -= 1
                 session['max_question'] = max_question
-                print(max_question)
 
                 cur = conn.cursor(cursor_factory=DictCursor)
 
-                cur.execute(f"DELETE FROM questions WHERE question_id = '{question_id}';")
+                cur.execute(f"DELETE FROM questions WHERE question_id = {question_id};")
 
                 if max_question == 0 :
 
-                    cur.execute(f"DELETE FROM tests WHERE test_id = '{test_id}'")
+                    cur.execute(f"DELETE FROM tests WHERE test_id = {test_id};")
                     
 
                     conn.commit()
@@ -373,7 +376,7 @@ def actions_delete_questions(current_question,action,question_id):
                     flash('Test has been deleted!',category='success')
                     return redirect(url_for('groups.group',group_id = group_id))
                 
-                cur.execute(f"UPDATE tests SET number_questions = '{max_question}' WHERE test_id = '{test_id}';")
+                cur.execute(f"UPDATE tests SET number_questions = {max_question} WHERE test_id = {test_id};")
 
                 conn.commit()
                 cur.close()
@@ -391,9 +394,9 @@ def actions_delete_questions(current_question,action,question_id):
 
                 cur = conn.cursor(cursor_factory=DictCursor)
                 
-                cur.execute(f"DELETE FROM questions WHERE test_id = '{test_id}'")
+                cur.execute(f"DELETE FROM questions WHERE test_id = {test_id};")
 
-                cur.execute(f"DELETE FROM tests WHERE test_id = '{test_id}'")
+                cur.execute(f"DELETE FROM tests WHERE test_id = {test_id};")
 
                 conn.commit()
                 cur.close()
@@ -481,7 +484,6 @@ def delete_question(current_question):
         questions.pop(int(current_question))
 
         for question in questions:
-            print('question',question)
             if question > int(current_question):
                 questions_change.append(question)
         
@@ -495,20 +497,18 @@ def delete_question(current_question):
 
         session['max_question'] = max_question
 
-        print('delete',questions,'max questions:', max_question)
-
     flash(f'Question {int(current_question)} has been deleted!',category='success')
 
     if isinstance(current_question,int):
 
-        if current_question != 1 and max_question < current_question:
+        if current_question != 1 and max_question <= current_question:
             return redirect(url_for('tests.create_questions',current_question = current_question - 1))
 
         else:
             return redirect(url_for('tests.create_questions',current_question = current_question ))
     
     else:
-        if int(current_question) != 1 and max_question < int(current_question):
+        if int(current_question) != 1 and max_question <= int(current_question):
             return redirect(url_for('tests.edit_test',current_question = int(current_question) - 1))
 
         else:
@@ -534,7 +534,7 @@ def complete_test():
     cur = conn.cursor(cursor_factory=DictCursor)
 
     sql = "INSERT INTO tests(test_name,group_id,number_questions) values(%s,%s,%s) RETURNING test_id"
-    val = (f'{test_name}',f'{group_id}',f'{max_question}')
+    val = (f'{test_name}',group_id,max_question)
     cur.execute(sql,val)
 
 
@@ -567,8 +567,8 @@ def complete_test():
 
         val = (f'{questions[question][str_val[0]]}',f'{questions[question][str_val[1]]}'
         ,f'{questions[question][str_val[2]]}',f'{questions[question][str_val[3]]}'
-        ,f'{questions[question][str_val[4]]}',f'{questions[question][str_val[5]]}',f'{test_id}'
-        ,f'{user_id}',f'{group_id}')
+        ,f'{questions[question][str_val[4]]}',f'{questions[question][str_val[5]]}',test_id
+        ,user_id,group_id)
         
 
         cur.execute(sql,val)
@@ -612,36 +612,32 @@ def update_test():
     del session['test_id']
     del session['max_question']
 
-    print(questions)
-    print(len(questions))
-
     cur = conn.cursor(cursor_factory=DictCursor)
 
-    cur.execute(f"SELECT * FROM questions WHERE test_id = '{test_id}' AND user_id != '{user_id}';")
+    cur.execute(f"SELECT * FROM questions WHERE test_id = {test_id} AND user_id != {user_id};")
     number_questions = cur.fetchall()
 
     if max_question == 1 and len(questions[1]) == 1 :
         
-        cur.execute(f"DELETE FROM questions WHERE user_id = '{user_id}' AND test_id = '{test_id}'")
+        cur.execute(f"DELETE FROM questions WHERE user_id = {user_id} AND test_id = {test_id};")
         
 
         if len(number_questions) == 0 :
-            cur.execute(f"DELETE FROM tests WHERE test_id = '{test_id}'")
+            cur.execute(f"DELETE FROM tests WHERE test_id = {test_id};")
 
         else:
-            cur.execute(f"UPDATE tests SET number_questions = '{len(number_questions)}' WHERE test_id = '{test_id}';")
+            cur.execute(f"UPDATE tests SET number_questions = {len(number_questions)} WHERE test_id = {test_id};")
 
         conn.commit()
         cur.close()
 
         return redirect(url_for('groups.group',group_id = group_id))
 
-    print('questions number :',len(number_questions) + max_question )
     all_questions = len(number_questions) + max_question
 
-    cur.execute(f"UPDATE tests SET number_questions = '{all_questions}' WHERE test_id = '{test_id}';")
+    cur.execute(f"UPDATE tests SET number_questions = {all_questions} WHERE test_id = {test_id};")
 
-    cur.execute(f"DELETE FROM questions WHERE user_id = '{user_id}' AND test_id = '{test_id}';")
+    cur.execute(f"DELETE FROM questions WHERE user_id = {user_id} AND test_id = {test_id};")
 
     conn.commit()
 
@@ -670,8 +666,8 @@ def update_test():
 
         val = (f'{questions[question][str_val[0]]}',f'{questions[question][str_val[1]]}'
         ,f'{questions[question][str_val[2]]}',f'{questions[question][str_val[3]]}'
-        ,f'{questions[question][str_val[4]]}',f'{questions[question][str_val[5]]}',f'{test_id}'
-        ,f'{user_id}',f'{group_id}')
+        ,f'{questions[question][str_val[4]]}',f'{questions[question][str_val[5]]}',test_id
+        ,user_id,group_id)
 
         cur.execute(sql,val)
         conn.commit()

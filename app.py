@@ -4,7 +4,7 @@ import time
 
 # not a clever way to wait for db
 # in future maybe replace with this https://stackoverflow.com/questions/35069027/docker-wait-for-postgresql-to-be-running
-time.sleep(20) 
+# time.sleep(20) 
 
 app = create_app()
 

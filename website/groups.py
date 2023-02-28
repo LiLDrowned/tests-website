@@ -12,10 +12,10 @@ def groups_menu():
     cur = conn.cursor(cursor_factory=DictCursor)
     user_id = current_user.id
 
-    cur.execute(f"SELECT * FROM invitations WHERE user_id ='{user_id}'")
+    cur.execute(f"SELECT * FROM invitations WHERE user_id ={user_id}")
     invitations = cur.fetchall()
 
-    cur.execute(f"SELECT * FROM groups WHERE user_id = '{user_id}'")
+    cur.execute(f"SELECT * FROM groups WHERE user_id = {user_id}")
     groups = cur.fetchall()
 
     cur.close()
@@ -35,15 +35,15 @@ def group(group_id):
 
     cur = conn.cursor(cursor_factory=DictCursor)
     cur.execute("SELECT * FROM users WHERE user_id IN"
-                f"(SELECT user_id FROM groups WHERE group_id = '{group_id}');")
+                f"(SELECT user_id FROM groups WHERE group_id = {group_id});")
     members = cur.fetchall()
 
-    cur.execute(f"SELECT * FROM users WHERE user_id IN (SELECT user_id FROM invitations WHERE group_id ='{group_id}');")
+    cur.execute(f"SELECT * FROM users WHERE user_id IN (SELECT user_id FROM invitations WHERE group_id ={group_id});")
     invites = cur.fetchall()
 
     user_id = current_user.id
 
-    cur.execute(f"SELECT * FROM groups WHERE group_id = '{group_id}' AND user_id = '{user_id}'")
+    cur.execute(f"SELECT * FROM groups WHERE group_id = {group_id} AND user_id = {user_id}")
     value = cur.fetchone()
     cur.close()
 
@@ -53,12 +53,12 @@ def group(group_id):
         group_id = session['group_id']
 
         cur = conn.cursor(cursor_factory=DictCursor)
-        cur.execute(f"SELECT group_name,group_admin FROM groups WHERE group_id = '{group_id}' AND"
-                    f" user_id = '{user_id}';")
+        cur.execute(f"SELECT group_name,group_admin FROM groups WHERE group_id = {group_id} AND"
+                    f" user_id = {user_id};")
         
         users_group = cur.fetchone()
 
-        cur.execute(f"SELECT test_id,test_name FROM tests WHERE group_id = '{group_id}';")
+        cur.execute(f"SELECT test_id,test_name FROM tests WHERE group_id = {group_id};")
         tests = cur.fetchall()
 
         cur.close()
@@ -93,14 +93,14 @@ def create_group():
         cur = conn.cursor(cursor_factory=DictCursor)
 
         sql = "INSERT INTO groups(group_name,user_id,group_admin) values (%s,%s,%s) RETURNING id"
-        values = (f'{group_name}',f'{user_id}','True')
+        values = (f'{group_name}',user_id,'True')
 
         cur.execute(sql,values)
         conn.commit()
 
         group_id = cur.fetchone()['id']
 
-        cur.execute(f"UPDATE groups SET group_id = '{group_id}' WHERE id = '{group_id}';")
+        cur.execute(f"UPDATE groups SET group_id = {group_id} WHERE id = {group_id};")
         conn.commit()
 
         cur.close()
@@ -122,11 +122,11 @@ def people():
 
             if search != None :
 
-                group_id = session.get('group_id')
+                group_id = session.get(group_id)
                 cur = conn.cursor(cursor_factory=DictCursor)
                 cur.execute(f"SELECT * FROM users WHERE LOWER(name) LIKE LOWER('{search}%')"
-                        f" AND user_id NOT IN (SELECT user_id FROM groups WHERE group_id = '{group_id}')"
-                        f" AND user_id NOT IN (SELECT user_id FROM invitations WHERE group_id = '{group_id}')")
+                        f" AND user_id NOT IN (SELECT user_id FROM groups WHERE group_id = {group_id})"
+                        f" AND user_id NOT IN (SELECT user_id FROM invitations WHERE group_id = {group_id})")
 
                 finds = cur.fetchall()
                 cur.close()
@@ -145,8 +145,8 @@ def people():
 
             cur = conn.cursor()
             cur.execute("SELECT * FROM users WHERE user_id NOT IN(SELECT user_id FROM "
-                        f"groups WHERE group_id = '{group_id}') AND user_id NOT IN"
-                        f"(SELECT user_id FROM invitations WHERE group_id = '{group_id}')")
+                        f"groups WHERE group_id = {group_id}) AND user_id NOT IN"
+                        f"(SELECT user_id FROM invitations WHERE group_id = {group_id})")
                 
             people = cur.fetchall()
             cur.close()
@@ -171,10 +171,10 @@ def kick_person(user_id):
             
             cur = conn.cursor(cursor_factory=DictCursor)
 
-            cur.execute(f"DELETE FROM invitations WHERE group_id = '{group_id}' AND user_id = '{user_id}';")
+            cur.execute(f"DELETE FROM invitations WHERE group_id = {group_id} AND user_id = {user_id};")
             conn.commit()
 
-            cur.execute(f"DELETE FROM groups WHERE group_id = '{group_id}' AND user_id = '{user_id}';")
+            cur.execute(f"DELETE FROM groups WHERE group_id = {group_id} AND user_id = {user_id};")
             conn.commit()
 
             cur.close()
@@ -199,21 +199,21 @@ def leave_group(user_id):
 
         cur = conn.cursor(cursor_factory=DictCursor)
 
-        cur.execute(f"SELECT * FROM groups WHERE group_id = '{group_id}' AND user_id = '{user_id}';")
+        cur.execute(f"SELECT * FROM groups WHERE group_id = {group_id} AND user_id = {user_id};")
         user = cur.fetchone()
 
         if user['group_admin'] == 'True':
-            cur.execute(f"SELECT * FROM groups WHERE group_id = '{group_id}';")
+            cur.execute(f"SELECT * FROM groups WHERE group_id = {group_id};")
             all_users = cur.fetchall()
 
             if len(all_users) == 1:
-                cur.execute(f"DELETE FROM invitations WHERE group_id = '{group_id}';")
+                cur.execute(f"DELETE FROM invitations WHERE group_id = {group_id};")
 
-                cur.execute(f"DELETE FROM questions WHERE group_id = '{group_id}'")
+                cur.execute(f"DELETE FROM questions WHERE group_id = {group_id}")
 
-                cur.execute(f"DELETE FROM tests WHERE group_id = '{group_id}'")
+                cur.execute(f"DELETE FROM tests WHERE group_id = {group_id}")
 
-                cur.execute(f"DELETE FROM groups WHERE user_id = '{user_id}' AND group_id = '{group_id}';")
+                cur.execute(f"DELETE FROM groups WHERE user_id = {user_id} AND group_id = {group_id};")
 
                 conn.commit()
                 cur.close()
@@ -222,13 +222,13 @@ def leave_group(user_id):
                 return redirect(url_for('groups.groups_menu'))
             
             else:
-                cur.execute(f"DELETE FROM groups WHERE user_id = '{user_id}' AND group_id = '{group_id}';")
+                cur.execute(f"DELETE FROM groups WHERE user_id = {user_id} AND group_id = {group_id};")
                 
-                cur.execute(f"SELECT * FROM groups WHERE group_id = '{group_id}';")
+                cur.execute(f"SELECT * FROM groups WHERE group_id = {group_id};")
                 users = cur.fetchone()['user_id']
 
                 cur.execute("UPDATE groups SET group_admin = 'True' "
-                           f" WHERE group_id = '{group_id}' AND user_id = '{users}'")
+                           f" WHERE group_id = {group_id} AND user_id = {users}")
 
                 conn.commit()
                 cur.close()
@@ -236,7 +236,7 @@ def leave_group(user_id):
                 flash('You have left the group!', category='success')
                 return redirect(url_for('groups.groups_menu'))
         else:
-            cur.execute(f"DELETE FROM groups WHERE user_id = '{user_id}' AND group_id = '{group_id}';")
+            cur.execute(f"DELETE FROM groups WHERE user_id = {user_id} AND group_id = {group_id};")
             
             conn.commit()
             cur.close()
@@ -258,21 +258,21 @@ def delete_group(group_id):
 
         cur = conn.cursor(cursor_factory=DictCursor)
 
-        cur.execute(f"SELECT * FROM groups WHERE group_id = '{group_id}' AND user_id = '{user_id}';")
+        cur.execute(f"SELECT * FROM groups WHERE group_id = {group_id} AND user_id = {user_id};")
         user = cur.fetchone()
 
         if user['group_admin'] == 'True':
-            cur.execute(f"SELECT * FROM groups WHERE group_id = '{group_id}';")
+            cur.execute(f"SELECT * FROM groups WHERE group_id = {group_id};")
             all_users = cur.fetchall()
 
             if len(all_users) == 1:
-                cur.execute(f"DELETE FROM invitations WHERE group_id = '{group_id}';")
+                cur.execute(f"DELETE FROM invitations WHERE group_id = {group_id};")
 
-                cur.execute(f"DELETE FROM questions WHERE group_id = '{group_id}'")
+                cur.execute(f"DELETE FROM questions WHERE group_id = {group_id};")
 
-                cur.execute(f"DELETE FROM tests WHERE group_id = '{group_id}'")
+                cur.execute(f"DELETE FROM tests WHERE group_id = {group_id};")
 
-                cur.execute(f"DELETE FROM groups WHERE user_id = '{user_id}' AND group_id = '{group_id}';")
+                cur.execute(f"DELETE FROM groups WHERE user_id = {user_id} AND group_id = {group_id};")
 
                 conn.commit()
                 cur.close()
@@ -281,13 +281,13 @@ def delete_group(group_id):
                 return redirect(url_for('groups.groups_menu'))
             
             else:
-                cur.execute(f"DELETE FROM groups WHERE user_id = '{user_id}' AND group_id = '{group_id}';")
+                cur.execute(f"DELETE FROM groups WHERE user_id = {user_id} AND group_id = {group_id};")
                 
-                cur.execute(f"SELECT * FROM groups WHERE group_id = '{group_id}';")
+                cur.execute(f"SELECT * FROM groups WHERE group_id = {group_id};")
                 users = cur.fetchone()['user_id']
 
                 cur.execute("UPDATE groups SET group_admin = 'True' "
-                           f" WHERE group_id = '{group_id}' AND user_id = '{users}'")
+                           f" WHERE group_id = {group_id} AND user_id = {users};")
 
                 conn.commit()
                 cur.close()
@@ -295,7 +295,7 @@ def delete_group(group_id):
                 flash('You have left the group!', category='success')
                 return redirect(url_for('groups.groups_menu'))
         else:
-            cur.execute(f"DELETE FROM groups WHERE user_id = '{user_id}' AND group_id = '{group_id}';")
+            cur.execute(f"DELETE FROM groups WHERE user_id = {user_id} AND group_id = {group_id};")
             
             conn.commit()
             cur.close()
@@ -312,12 +312,12 @@ def add_person(user_id):
     group_id = session.get('group_id')
     cur = conn.cursor(cursor_factory=DictCursor)
 
-    cur.execute(f"SELECT group_name FROM groups WHERE group_id='{group_id}';")
+    cur.execute(f"SELECT group_name FROM groups WHERE group_id={group_id};")
     group = cur.fetchone()
     group_name = group['group_name']
 
     sql = "INSERT INTO invitations (group_name, group_id, user_id) values (%s,%s,%s);"
-    val = (f'{group_name}', f'{group_id}', f'{user_id}')
+    val = (f'{group_name}', group_id, user_id)
     cur.execute(sql,val)
 
     conn.commit()
@@ -332,10 +332,10 @@ def join_group(group_id,group_name):
     
     cur = conn.cursor(cursor_factory=DictCursor)
     user_id = current_user.id
-    cur.execute(f"DELETE FROM invitations WHERE user_id = '{user_id}' AND group_id = '{group_id}'")
+    cur.execute(f"DELETE FROM invitations WHERE user_id = {user_id} AND group_id = {group_id};")
 
     postsql = "INSERT INTO groups(group_id,group_name,user_id) values (%s,%s,%s)"
-    val = (f'{group_id}',f'{group_name}', f'{user_id}')
+    val = (group_id,f'{group_name}', user_id)
 
     cur.execute(postsql,val)
     conn.commit()
@@ -350,7 +350,7 @@ def cancel_invite(group_id):
     user_id = current_user.id
 
     cur = conn.cursor(cursor_factory=DictCursor)
-    cur.execute(f"DELETE FROM invitations WHERE user_id = '{user_id}' AND group_id = '{group_id}'")
+    cur.execute(f"DELETE FROM invitations WHERE user_id = {user_id} AND group_id = {group_id};")
 
     conn.commit()
     cur.close()

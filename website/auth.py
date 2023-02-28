@@ -153,14 +153,10 @@ def sign_up():
 
 @auth.route('/logout/', methods=["POST", "GET"])
 def logout():
-    if 'group_id' in session:
-        print(session.get('group_id'))
     # logging of user from users class
     session.clear()
-    if 'group_id' in session:
-        print(session.get('group_id'))
-        print(session.get('admin'))
 
     flash("You have been successfully logged out!",category='success') 
     logout_user()
+    
     return redirect(url_for('auth.login'))
