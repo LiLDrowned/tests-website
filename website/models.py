@@ -1,12 +1,12 @@
-from .settings import DB_PASSWORD, DB_USERNAME
+from .settings import POSTGRES_PASSWORD, POSTGRES_USERNAME, POSTGRES_HOST, POSTGRES_DATABASE
 import psycopg2
 from flask_login import UserMixin
 
 conn = psycopg2.connect(
-    host="localhost",
-    database="StudentsTests",
-    user=DB_USERNAME,
-    password=DB_PASSWORD)
+    host=POSTGRES_HOST,
+    database=POSTGRES_DATABASE,
+    user=POSTGRES_USERNAME,
+    password=POSTGRES_PASSWORD)
 
 cur = conn.cursor()
 
