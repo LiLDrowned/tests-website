@@ -4,6 +4,7 @@
 __pycache__/
 /__pycache__
 .testing
+/dev
 /testing
 /.vscode
-venv/
+/venv
