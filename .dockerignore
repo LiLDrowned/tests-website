@@ -1,0 +1,10 @@
+.env
+/env
+/.venv
+__pycache__/
+/__pycache__
+.testing
+/dev
+/testing
+/.vscode
+/venv
