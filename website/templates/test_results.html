@@ -23,108 +23,184 @@
 
     <br>
 
-    <div class="p-3 col-xs-8 col-md-8 offset-md-2 border">
-      <div class="form-check form-check-inline">
-
-        {% if all_answers[current_question] == 'a1' and 
+    {% if all_answers[current_question] == 'a1' and 
         right_answers[current_question - 1]['right_question'] == 'a1'%}
 
-        ✓
+        <div class="p-3 col-xs-8 col-md-8 offset-md-2 border border-success">
+          <div class="form-check form-check-inline">
+            ✓<label class="form-check-label "> 
+              {{ questions[current_question - 1]['asnwer1'] }}</label>
+          </div>
+        </div>
 
         {% elif all_answers[current_question] == 'a1' and 
         right_answers[current_question - 1]['right_question'] != 'a1'%}
 
-        X
+        <div class="p-3 col-xs-8 col-md-8 offset-md-2 border border-danger">
+          <div class="form-check form-check-inline">
+            X<label class="form-check-label "> 
+              {{ questions[current_question - 1]['asnwer1'] }}</label>
+          </div>
+        </div>
+
 
         {% elif all_answers[current_question] != 'a1' and 
         right_answers[current_question - 1]['right_question'] == 'a1'%}
 
-        ✓
+        <div class="p-3 col-xs-8 col-md-8 offset-md-2 border border-success">
+          <div class="form-check form-check-inline">
+            ✓<label class="form-check-label "> 
+              {{ questions[current_question - 1]['asnwer1'] }}</label>
+          </div>
+        </div>
+
+        {% else %}
+
+        <div class="p-3 col-xs-8 col-md-8 offset-md-2 border">
+          <div class="form-check form-check-inline">
+            <label class="form-check-label "> 
+              {{ questions[current_question - 1]['asnwer1'] }}</label>
+          </div>
+        </div>
 
         {% endif %}
 
-         <label class="form-check-label">{{ questions[current_question - 1]['asnwer1'] }}</label>
-      </div>
-    </div>
 
     <br>
 
-    <div class="p-3 col-xs-8 col-md-8 offset-md-2 border">
-      <div class="form-check form-check-inline">
-
-        {% if all_answers[current_question] == 'a2' and 
+    {% if all_answers[current_question] == 'a2' and 
         right_answers[current_question - 1]['right_question'] == 'a2'%}
 
-        ✓
+        <div class="p-3 col-xs-8 col-md-8 offset-md-2 border border-success">
+          <div class="form-check form-check-inline">
+            ✓<label class="form-check-label "> 
+              {{ questions[current_question - 1]['asnwer2'] }}</label>
+          </div>
+        </div>
 
         {% elif all_answers[current_question] == 'a2' and 
         right_answers[current_question - 1]['right_question'] != 'a2'%}
 
-        X
+        <div class="p-3 col-xs-8 col-md-8 offset-md-2 border border-danger">
+          <div class="form-check form-check-inline">
+            X<label class="form-check-label "> 
+              {{ questions[current_question - 1]['asnwer2'] }}</label>
+          </div>
+        </div>
+
 
         {% elif all_answers[current_question] != 'a2' and 
         right_answers[current_question - 1]['right_question'] == 'a2'%}
 
-        ✓
+        <div class="p-3 col-xs-8 col-md-8 offset-md-2 border border-success">
+          <div class="form-check form-check-inline">
+            ✓<label class="form-check-label "> 
+              {{ questions[current_question - 1]['asnwer2'] }}</label>
+          </div>
+        </div>
+
+        {% else %}
+
+        <div class="p-3 col-xs-8 col-md-8 offset-md-2 border">
+          <div class="form-check form-check-inline">
+            <label class="form-check-label "> 
+              {{ questions[current_question - 1]['asnwer2'] }}</label>
+          </div>
+        </div>
 
         {% endif %}
 
-         <label class="form-check-label">{{ questions[current_question - 1]['asnwer2'] }}</label>
-      </div>
-    </div>
 
     <br>
 
-    <div class="p-3 col-xs-8 col-md-8 offset-md-2 border">
-      <div class="form-check form-check-inline">
-
-        {% if all_answers[current_question] == 'a3' and 
+    {% if all_answers[current_question] == 'a3' and 
         right_answers[current_question - 1]['right_question'] == 'a3'%}
 
-        ✓
+        <div class="p-3 col-xs-8 col-md-8 offset-md-2 border border-success">
+          <div class="form-check form-check-inline">
+            ✓<label class="form-check-label "> 
+              {{ questions[current_question - 1]['asnwer3'] }}</label>
+          </div>
+        </div>
 
         {% elif all_answers[current_question] == 'a3' and 
         right_answers[current_question - 1]['right_question'] != 'a3'%}
 
-        X
+        <div class="p-3 col-xs-8 col-md-8 offset-md-2 border border-danger">
+          <div class="form-check form-check-inline">
+            X<label class="form-check-label "> 
+              {{ questions[current_question - 1]['asnwer3'] }}</label>
+          </div>
+        </div>
+
 
         {% elif all_answers[current_question] != 'a3' and 
         right_answers[current_question - 1]['right_question'] == 'a3'%}
 
-        ✓
+        <div class="p-3 col-xs-8 col-md-8 offset-md-2 border border-success">
+          <div class="form-check form-check-inline">
+            ✓<label class="form-check-label "> 
+              {{ questions[current_question - 1]['asnwer3'] }}</label>
+          </div>
+        </div>
+
+        {% else %}
+
+        <div class="p-3 col-xs-8 col-md-8 offset-md-2 border">
+          <div class="form-check form-check-inline">
+            <label class="form-check-label "> 
+              {{ questions[current_question - 1]['asnwer3'] }}</label>
+          </div>
+        </div>
 
         {% endif %}
 
-         <label class="form-check-label">{{ questions[current_question - 1]['asnwer3'] }}</label>
-      </div>
-    </div>
 
     <br>
-
-    <div class="p-3 col-xs-8 col-md-8 offset-md-2 border">
-      <div class="form-check form-check-inline">
 
         {% if all_answers[current_question] == 'a4' and 
         right_answers[current_question - 1]['right_question'] == 'a4'%}
 
-        ✓
+        <div class="p-3 col-xs-8 col-md-8 offset-md-2 border border-success">
+          <div class="form-check form-check-inline">
+            ✓<label class="form-check-label "> 
+              {{ questions[current_question - 1]['asnwer4'] }}</label>
+          </div>
+        </div>
 
         {% elif all_answers[current_question] == 'a4' and 
         right_answers[current_question - 1]['right_question'] != 'a4'%}
 
-        X
+        <div class="p-3 col-xs-8 col-md-8 offset-md-2 border border-danger">
+          <div class="form-check form-check-inline">
+            X<label class="form-check-label "> 
+              {{ questions[current_question - 1]['asnwer4'] }}</label>
+          </div>
+        </div>
+
 
         {% elif all_answers[current_question] != 'a4' and 
         right_answers[current_question - 1]['right_question'] == 'a4'%}
 
-        ✓
+        <div class="p-3 col-xs-8 col-md-8 offset-md-2 border border-success">
+          <div class="form-check form-check-inline">
+            ✓<label class="form-check-label "> 
+              {{ questions[current_question - 1]['asnwer4'] }}</label>
+          </div>
+        </div>
+
+        {% else %}
+
+        <div class="p-3 col-xs-8 col-md-8 offset-md-2 border">
+          <div class="form-check form-check-inline">
+            <label class="form-check-label "> 
+              {{ questions[current_question - 1]['asnwer4'] }}</label>
+          </div>
+        </div>
 
         {% endif %}
 
-         <label class="form-check-label">{{ questions[current_question - 1]['asnwer4'] }}</label>
-      </div>
-    </div>
-
+         
     <br>
 
     <nav aria-label="Page navigation example ">
