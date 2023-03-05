@@ -29,3 +29,22 @@ jobs:
           registry: docker.io
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+  deploy:
+    name: deploy
+    needs: build
+    runs-on: ubuntu-20.04
+
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+    - name: Executing remote ssh docker deploy
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.IP_ADDRESS }}
+        username: ${{ secrets.DEPLOY_USERNAME }}
+        password: ${{ secrets.DEPLOY_PASSWORD }}
+        script: |
+          cd /home/actions/docker-infra
+          docker-compose pull students_tests_server && docker-compose up -d --build students_tests_server && docker system prune -f
