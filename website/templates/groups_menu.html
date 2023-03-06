@@ -37,11 +37,11 @@
                   {% for group in groups %}
                   <tr>
 
-                    <td class="col-md-8 text-center">{{ group['group_name'] }}</td>
+                    <td class="col-md-8 text-center align-middle">{{ group['group_name'] }}</td>
                     <td class="text-center"><a class="btn btn-success bi bi-box-arrow-in-right" test-id="go-to" 
                       href="/groups/group/{{ group['group_id'] }}"> Go</a>
                         <a class="btn btn-danger bi bi-trash"
-                         href="/groups/deleting-group/{{ group['group_id'] }}"> Delete</a></td>
+                         href="/groups/deleting-group/{{ group['group_id'] }}"> Del</a></td>
 
 
                   </tr>
@@ -88,7 +88,7 @@
                     {% for invite in invitations %}
                     <tr>
   
-                      <td class="col-md-8 text-center">{{ invite[1] }}</td>
+                      <td class="col-md-8 text-center align-middle">{{ invite[1] }}</td>
                       <td class="text-center"><a class="btn btn-primary bi bi-check" 
                         href="/groups/join-group/{{invite[2]}}/{{invite[1]}}/">Acpt</a>
                           <a class="btn btn-danger bi bi-trash" 

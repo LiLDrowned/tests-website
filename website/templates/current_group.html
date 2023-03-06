@@ -12,7 +12,7 @@
     </div>
     
     <div class="row">
-      <div class="col-md-3 text-center">
+      <div class="col-lg-3 col-sm-8 text-center offset-sm-2 offset-lg-0">
 
             <table class="table table-bordered table-light">
 
@@ -33,7 +33,7 @@
 
                     <tr>
 
-                      <td class="col-md-8 col-sm-7 col-7 text-center">{{ member['name'] }}
+                      <td class="col-md-8 col-sm-7 col-7 text-center align-middle">{{ member['name'] }}
 
                         {% if current_user.id == member['user_id'] %}
                         (You)
@@ -75,7 +75,7 @@
 
                     <tr>
 
-                      <td class="col-md-8 text-center">{{ invite['name'] }}</td>
+                      <td class="col-md-8 col-sm-7 col-7 text-center align-middle">{{ invite['name'] }}</td>
                         {% if admin == True %}
                         <td> 
                           <a class="btn btn-danger bi bi-x-circle-fill" 
@@ -95,7 +95,7 @@
 
         </div>
         
-        <div class="col-md-9 text-center">
+        <div class="col-lg-9 col-sm-8 text-center offset-sm-2 offset-lg-0">
 
             {% if tests != [] %}
 
@@ -117,7 +117,7 @@
                   {% for test in tests %}
                   <tr>
 
-                    <td class="col-md-8 text-center">{{ test[1] }}</td>
+                    <td class="col-md-8 text-center align-middle">{{ test[1] }}</td>
                     <td class="text-center">
                         <a class="btn btn-success bi bi-box-arrow-in-right" 
                         href="/tests/sessions-start-test/{{ test['test_id'] }}/"> Start</a>
@@ -143,12 +143,12 @@
             </table>
 
             {% else %}
-                <div class="row offset-md-6">
+                <div class="row col-lg-6 col-sm-6 col-6 offset-lg-5 offset-4 text-center">
                   <i class="bi bi-file-earmark"></i>
                   <span><h4>No tests</h4> </span>
                 </div>
 
-                <div class="row offset-md-6">
+                <div class="row col-lg-6 col-sm-6 col-6 offset-lg-5 offset-4 text-center">
                   <a class="btn btn-primary bi-file-earmark-plus" href="/tests/create-test">Create test</a>
                 </div>
                 

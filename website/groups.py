@@ -88,6 +88,11 @@ def create_group():
     if request.method == 'POST':
 
         group_name = request.form.get('group_name')
+        
+        if group_name == '':
+            flash('Enter name for the group!', category='error')
+            return redirect(url_for('groups.create_group'))
+
         user_id = current_user.id
 
         cur = conn.cursor(cursor_factory=DictCursor)
@@ -115,6 +120,7 @@ def create_group():
 def people():
 
     if 'group_id' in session:
+        group_id = session.get('group_id')
 
         if request.method == "POST":
 
@@ -122,7 +128,7 @@ def people():
 
             if search != None :
 
-                group_id = session.get(group_id)
+                
                 cur = conn.cursor(cursor_factory=DictCursor)
                 cur.execute(f"SELECT * FROM users WHERE LOWER(name) LIKE LOWER('{search}%')"
                         f" AND user_id NOT IN (SELECT user_id FROM groups WHERE group_id = {group_id})"
@@ -131,7 +137,6 @@ def people():
                 finds = cur.fetchall()
                 cur.close()
 
-                flash('User has been invited!', category='success')
                 return render_template('people.html',user = current_user,people = finds ,page = 'Group',
                                     group_id = group_id)
 
@@ -141,9 +146,8 @@ def people():
 
         else:
 
-            group_id = session.get('group_id')
-
             cur = conn.cursor()
+        
             cur.execute("SELECT * FROM users WHERE user_id NOT IN(SELECT user_id FROM "
                         f"groups WHERE group_id = {group_id}) AND user_id NOT IN"
                         f"(SELECT user_id FROM invitations WHERE group_id = {group_id})")
@@ -151,11 +155,10 @@ def people():
             people = cur.fetchall()
             cur.close()
 
-            group_id = session.get('group_id')
-
             return render_template('people.html',user = current_user,people = people ,page = 'Group',
                                     group_id = group_id)
-
+        
+                
     else:
         flash('You are not member of this group!', category='error')
         return redirect(url_for('groups.groups_menu'))
@@ -302,7 +305,6 @@ def delete_group(group_id):
 
             flash('You have left the group!', category='success')
             return redirect(url_for('groups.groups_menu'))
-
 
 
 @groups.route('/add-person/<int:user_id>/', methods = ["GET", "PUT"])
